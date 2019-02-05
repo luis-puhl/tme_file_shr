@@ -9,10 +9,6 @@ class AddFile extends StatefulWidget {
 class _AddFileState extends State<AddFile> {
   List<FileSelected> files = [];
 
-  Widget _buildCards() {
-    return files.map(file => FileCard(file)).toList()
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

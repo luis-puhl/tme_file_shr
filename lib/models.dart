@@ -1,19 +1,26 @@
 class User {
-  String name, phone;
-  List<Order> orders;
+  String name = '', phone = '';
+  List<Order> orders = [];
+
+  @override
+  String toString() {
+    return "name: '$name', phone: '$phone', orders: ${orders.length}";
+  }
+}
+
+enum OrderStatus {
+  local,
+  uploaded,
+  printed,
+  retrieved,
 }
 
 class Order {
-  final STATUS_LOCAL = 'local';
-  final STATUS_UPLOADED = 'uploaded';
-  final STATUS_PRINTED = 'printed';
-  final STATUS_RETRIEVED = 'retrieved';
-
-  List<FileConfig> files;
-  String status;
+  List<FileConfig> files = [];
+  OrderStatus status = OrderStatus.local;
 }
 
 class FileConfig {
-  String fileName, path, size;
-  int qtd;
+  String fileName = '', path = '', printSize = '';
+  int qtd = 1;
 }

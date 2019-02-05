@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 
+import 'package:tme_file_shr/models.dart';
+import 'package:tme_file_shr/support/provider.dart';
+
 class Landing extends StatelessWidget {
+  // Create a text controller. We will use it to retrieve the current value
+  // of the TextField!
+  final nameController = TextEditingController();
+  final phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final User user = Provider.of(context).value;
     return Material(
       // color: Colors.greenAccent,
       child: Container(
@@ -14,6 +23,7 @@ class Landing extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   TextField(
+                    controller: nameController,
                     decoration: InputDecoration(
                       hintText: "Nome...",
                       hintStyle: TextStyle(
@@ -25,11 +35,9 @@ class Landing extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    onSubmitted: (String str) {
-                      print(str);
-                    },
                   ),
                   TextField(
+                    controller: phoneController,
                     decoration: InputDecoration(
                       hintText: "Telefone...",
                       hintStyle: TextStyle(
@@ -41,9 +49,6 @@ class Landing extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    onSubmitted: (String str) {
-                      print(str);
-                    },
                     keyboardType: TextInputType.phone,
                   ),
                 ],
@@ -51,7 +56,12 @@ class Landing extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             ),
             RaisedButton(
-              onPressed: () => Navigator.pushNamed(context, '/listing'),
+              onPressed: () {
+                user.name = nameController.text;
+                user.phone = phoneController.text;
+                Provider.of(context).value = user;
+                Navigator.pushNamed(context, '/listing');
+              },
               child: Text(
                 "Cadastrar",
                 style: TextStyle(fontSize: 25.0),

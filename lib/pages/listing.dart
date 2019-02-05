@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:tme_file_shr/main.dart';
+import 'package:tme_file_shr/models.dart';
+import 'package:tme_file_shr/support/provider.dart';
 
 class Listing extends StatelessWidget {
   List<Widget> _buildCards() {
@@ -45,15 +48,20 @@ class Listing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final User user = Provider.of(context).value;
+    print(user);
+    final tiles = _buildCards();
+    // tiles.add(Text(user.name));
     return Scaffold(
       appBar: AppBar(
         title: Text(TelegramFileShareApp.title),
       ),
       body: ListView(
-          children: ListTile.divideTiles(
-        context: context,
-        tiles: _buildCards(),
-      ).toList()),
+        children: ListTile.divideTiles(
+          context: context,
+          tiles: tiles,
+        ).toList(),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.pushNamed(context, '/add'),
         tooltip: 'Nova Impressão',
