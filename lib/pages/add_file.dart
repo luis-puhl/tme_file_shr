@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tme_file_shr/main.dart';
 
 class AddFile extends StatelessWidget {
-
   void _openFileExplorer() async {
     // _path = SupportFile.openFileExplorer();
     // setState(() {
@@ -10,112 +9,107 @@ class AddFile extends StatelessWidget {
     // });
   }
 
+  Widget _buildCard() {
+    return Container(
+      child: Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const ListTile(
+              leading: Icon(Icons.insert_drive_file),
+              title: Text('Pôster Loja'),
+              subtitle: Text('Tamanho 15x33\nCópias 1'),
+            ),
+            ButtonTheme.bar(
+              // make buttons use the appropriate styles for cards
+              child: ButtonBar(
+                children: <Widget>[
+                  FlatButton.icon(
+                    icon: Icon(Icons.edit),
+                    label: const Text('Editar'),
+                    onPressed: () => _openFileExplorer(),
+                  ),
+                  FlatButton.icon(
+                    icon: Icon(Icons.attach_file),
+                    label: const Text('Arquivo'),
+                    onPressed: () => _openFileExplorer(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // "Icon",
-    // "File Name",
-    // "find file",
-    // "Print!",
     return Scaffold(
       appBar: AppBar(
-        title: Text(TelegramFileShareApp.title),
+        title: Text('Editar Pedido'),
       ),
       body: Container(
         color: Colors.purple,
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Center(
-              child: Card(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.album),
-                      title: Text('The Enchanted Nightingale'),
-                      subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-                    ),
-                    ButtonTheme.bar( // make buttons use the appropriate styles for cards
-                      child: ButtonBar(
-                        children: <Widget>[
-                          FlatButton(
-                            child: const Text('BUY TICKETS'),
-                            onPressed: () { /* ... */ },
-                          ),
-                          FlatButton(
-                            child: const Text('LISTEN'),
-                            onPressed: () { /* ... */ },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Icon(Icons.file_upload),
-            Padding(
-              child: Column(
-                children: <Widget>[
-                  // Slider(
-                  //   value: 1.0,
-                  //   onChanged: (val) => print(val),
-                  //   min: 1.0,
-                  //   max: 30.0,
-                  //   divisions: 30,
-                  // ),
-                  TextField(
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      hintText: "Cópias",
-                      hintStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold),
-                      prefixIcon: Icon(
-                        Icons.face,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onSubmitted: (String str) {
-                      print(str);
-                    },
-                    autofocus: true,
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: "Tamanho impressão",
-                      hintStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold),
-                      prefixIcon: Icon(
-                        Icons.phone,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onSubmitted: (String str) {
-                      print(str);
-                    },
-                  ),
-                  RaisedButton(
-                    onPressed: () => _openFileExplorer(),
-                    child: new Text("Open file picker"),
-                  )
-                ],
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            ),
+            _buildCard(),
+            _buildCard(),
             RaisedButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                "Imprimir",
+                "Salvar",
                 style: TextStyle(fontSize: 25.0),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class CopiasButton extends StatefulWidget {
+  @override
+  _CopiasButtonState createState() => _CopiasButtonState();
+}
+
+class _CopiasButtonState extends State<CopiasButton> {
+  bool editing = false;
+  int ammount = 1;
+
+  Widget _buildTextField() {
+    return TextField(
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        hintText: "Cópias",
+        hintStyle: TextStyle(
+            color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),
+        prefixIcon: Icon(
+          Icons.face,
+          color: Colors.white,
+        ),
+      ),
+      onSubmitted: (String str) {
+        print(str);
+      },
+      autofocus: true,
+    );
+  }
+
+  Widget _buildLabel() {
+    if (ammount == 1) {
+      return Text('1 cópia');
+    }
+    return Text(ammount.toString() + ' cópias');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      child: editing ? _buildTextField() : _buildLabel(),
+      onPressed: () => setState(() => editing = true),
     );
   }
 }

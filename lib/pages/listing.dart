@@ -7,37 +7,40 @@ class Listing extends StatelessWidget {
       'Queen!',
       'Man at work',
       'Midnight Oil',
-    ].map((String g) => ListTile(
-          title: Center(
-            child: Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.album),
-                    title: Text(g),
-                    subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
-                  ),
-                  ButtonTheme.bar(
-                    // make buttons use the appropriate styles for cards
-                    child: ButtonBar(
-                      children: <Widget>[
-                        FlatButton(
-                          child: const Text('BUY TICKETS'),
-                          onPressed: () {/* ... */},
+    ]
+        .map((String g) => ListTile(
+              title: Center(
+                child: Card(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(Icons.album),
+                        title: Text(g),
+                        subtitle: Text(
+                            'Music by Julie Gable. Lyrics by Sidney Stein.'),
+                      ),
+                      ButtonTheme.bar(
+                        // make buttons use the appropriate styles for cards
+                        child: ButtonBar(
+                          children: <Widget>[
+                            FlatButton(
+                              child: const Text('BUY TICKETS'),
+                              onPressed: () {/* ... */},
+                            ),
+                            FlatButton(
+                              child: const Text('LISTEN'),
+                              onPressed: () {/* ... */},
+                            ),
+                          ],
                         ),
-                        FlatButton(
-                          child: const Text('LISTEN'),
-                          onPressed: () {/* ... */},
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        )).toList();
+            ))
+        .toList();
   }
 
   @override

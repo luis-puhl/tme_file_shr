@@ -1,0 +1,23 @@
+# Informações gerais
+
+Cliente: Maria Silva
+Telefone: (14) 996979191
+Data da emissão: 23-08-2010 23:18
+Data de entrega: 23-10-2010 14:00
+
+# Arquivo 1
+Nome arquivo: maria-silva_14996979191_23-10-2010_1.pdf
+Tamanho do arquivo: 77,1 kB
+Tamanho copia: 15x33
+Brilho: 1
+Qualidade prevista: talvez fique bom
+
+# Arquivo 2
+Nome arquivo: maria-silva_14996979191_23-10-2010_2.png
+Tamanho do arquivo: 1,0 MB
+Tamanho copia: 15x20
+Brilho: 4
+Qualidade prevista: talvez fique bom
+
+
+
