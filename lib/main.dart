@@ -4,13 +4,14 @@ import 'package:tme_file_shr/pages/landing.dart';
 import 'package:tme_file_shr/pages/listing.dart';
 import 'package:tme_file_shr/pages/add_file.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(TelegramFileShareApp());
 
-class MyApp extends StatelessWidget {
+class TelegramFileShareApp extends StatelessWidget {
+  static final title = 'Causando Impressão';
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Causando Impressão',
+      title: title,
       home: Landing(),
       routes: <String, WidgetBuilder>{
         '/landing': (BuildContext context) => Landing(),

@@ -16,8 +16,14 @@ class Landing extends StatelessWidget {
                   TextField(
                     decoration: InputDecoration(
                       hintText: "Nome...",
-                      hintStyle: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),
-                      prefixIcon: Icon(Icons.face, color: Colors.white,),
+                      hintStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold),
+                      prefixIcon: Icon(
+                        Icons.face,
+                        color: Colors.white,
+                      ),
                     ),
                     onSubmitted: (String str) {
                       print(str);
@@ -25,9 +31,15 @@ class Landing extends StatelessWidget {
                   ),
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Telefone...", 
-                      hintStyle: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),
-                      prefixIcon: Icon(Icons.phone, color: Colors.white,),
+                      hintText: "Telefone...",
+                      hintStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold),
+                      prefixIcon: Icon(
+                        Icons.phone,
+                        color: Colors.white,
+                      ),
                     ),
                     onSubmitted: (String str) {
                       print(str);
@@ -40,18 +52,20 @@ class Landing extends StatelessWidget {
             ),
             RaisedButton(
               onPressed: () => Navigator.pushNamed(context, '/listing'),
-              child: Text("Cadastrar",style: TextStyle(fontSize: 25.0),),
+              child: Text(
+                "Cadastrar",
+                style: TextStyle(fontSize: 25.0),
+              ),
             ),
           ],
         ),
         decoration: BoxDecoration(
-          image: DecorationImage(
-            // Load image from assets
-            image: AssetImage('assets/bg1.jpg'),
-            // Make the image cover the whole area
-            fit: BoxFit.cover,
-          )
-        ),
+            image: DecorationImage(
+          // Load image from assets
+          image: AssetImage('assets/bg1.jpg'),
+          // Make the image cover the whole area
+          fit: BoxFit.cover,
+        )),
       ),
     );
   }
