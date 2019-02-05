@@ -3,6 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 
+class FileSelected {
+  String fileName = '...', path = '...';
+  FileSelected(String path) {
+    this.path = path;
+    this.fileName = path != null ? path.split('/').last : '...';
+  }
+}
+
+class SupportFile {
+  static Future<FileSelected> openFileExplorer() async {
+    return FileSelected(await FilePicker.getFilePath(type: FileType.ANY, fileExtension: ''));
+  }
+}
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => new _MyAppState();

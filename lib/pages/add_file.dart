@@ -1,24 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:tme_file_shr/main.dart';
+import 'package:tme_file_shr/support/file.dart';
 
-class AddFile extends StatelessWidget {
-  void _openFileExplorer() async {
-    // _path = SupportFile.openFileExplorer();
-    // setState(() {
-    //   _fileName = _path != null ? _path.split('/').last : '...';
-    // });
+class AddFile extends StatefulWidget {
+  @override
+  _AddFileState createState() => _AddFileState();
+}
+
+class _AddFileState extends State<AddFile> {
+  List<FileSelected> files = [];
+
+  Widget _buildCards() {
+    return files.map(file => FileCard(file)).toList()
   }
 
-  Widget _buildCard() {
-    return Container(
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Editar Pedido'),
+      ),
+      body: Container(
+        color: Colors.purple,
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Column(
+          children: <Widget>[
+            FileCard(),
+            FileCard(),
+            RaisedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                "Salvar",
+                style: TextStyle(fontSize: 25.0),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class FileCard extends StatefulWidget {
+  @override
+  _FileCardState createState() => _FileCardState();
+}
+
+class _FileCardState extends State<FileCard> {
+  FileSelected file;
+
+  void _openFileExplorer() async {
+    FileSelected file = await SupportFile.openFileExplorer();
+    setState(() {
+      this.file = file;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+   return Container(
       child: Card(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            const ListTile(
+            ListTile(
               leading: Icon(Icons.insert_drive_file),
-              title: Text('Pôster Loja'),
-              subtitle: Text('Tamanho 15x33\nCópias 1'),
+              title: this.file != null ? Text(this.file.fileName) : Text('Arquivo'),
+              subtitle: Text('Tamanho 15x33\nCópias 1\nCaminho ' + (this.file != null ? this.file.path : '')),
             ),
             ButtonTheme.bar(
               // make buttons use the appropriate styles for cards
@@ -40,76 +88,6 @@ class AddFile extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Editar Pedido'),
-      ),
-      body: Container(
-        color: Colors.purple,
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Column(
-          children: <Widget>[
-            _buildCard(),
-            _buildCard(),
-            RaisedButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                "Salvar",
-                style: TextStyle(fontSize: 25.0),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class CopiasButton extends StatefulWidget {
-  @override
-  _CopiasButtonState createState() => _CopiasButtonState();
-}
-
-class _CopiasButtonState extends State<CopiasButton> {
-  bool editing = false;
-  int ammount = 1;
-
-  Widget _buildTextField() {
-    return TextField(
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        hintText: "Cópias",
-        hintStyle: TextStyle(
-            color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),
-        prefixIcon: Icon(
-          Icons.face,
-          color: Colors.white,
-        ),
-      ),
-      onSubmitted: (String str) {
-        print(str);
-      },
-      autofocus: true,
-    );
-  }
-
-  Widget _buildLabel() {
-    if (ammount == 1) {
-      return Text('1 cópia');
-    }
-    return Text(ammount.toString() + ' cópias');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FlatButton(
-      child: editing ? _buildTextField() : _buildLabel(),
-      onPressed: () => setState(() => editing = true),
     );
   }
 }
