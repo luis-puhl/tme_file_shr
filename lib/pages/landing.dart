@@ -14,24 +14,33 @@ class Landing extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   TextField(
-                    decoration: InputDecoration(hintText: "Your name...", hintStyle: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold)),
+                    decoration: InputDecoration(
+                      hintText: "Nome...",
+                      hintStyle: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),
+                      prefixIcon: Icon(Icons.face, color: Colors.white,),
+                    ),
                     onSubmitted: (String str) {
                       print(str);
                     },
                   ),
                   TextField(
-                    decoration: InputDecoration(hintText: "Your phone...", hintStyle: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold)),
+                    decoration: InputDecoration(
+                      hintText: "Telefone...", 
+                      hintStyle: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),
+                      prefixIcon: Icon(Icons.phone, color: Colors.white,),
+                    ),
                     onSubmitted: (String str) {
                       print(str);
                     },
+                    keyboardType: TextInputType.phone,
                   ),
                 ],
               ),
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             ),
             RaisedButton(
-              onPressed: () => print('tap'),
-              child: Text("Let's Go", style: TextStyle(color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.bold),),
+              onPressed: () => Navigator.pushNamed(context, '/listing'),
+              child: Text("Cadastrar",style: TextStyle(fontSize: 25.0),),
             ),
           ],
         ),
