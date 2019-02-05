@@ -52,7 +52,7 @@ class AddFile extends StatelessWidget {
                   ],
                 ),
               ),
-            )
+            ),
             Icon(Icons.file_upload),
             Padding(
               child: Column(
