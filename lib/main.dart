@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import 'package:tme_file_shr/models.dart';
-import 'package:tme_file_shr/support/provider.dart';
 import 'package:tme_file_shr/pages/landing.dart';
 import 'package:tme_file_shr/pages/listing.dart';
 import 'package:tme_file_shr/pages/add_file.dart';
@@ -12,8 +12,8 @@ class TelegramFileShareApp extends StatelessWidget {
   static final title = 'Causando Impressão';
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      initialValue: User(),
+    return ScopedModel<User>(
+      model: User(),
       child: MaterialApp(
         title: title,
         home: Landing(),

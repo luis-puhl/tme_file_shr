@@ -1,6 +1,7 @@
 import 'dart:math';
+import 'package:scoped_model/scoped_model.dart';
 
-class User {
+class User extends Model {
   String name = '', phone = '';
   List<Order> orders = [
     Order([
@@ -41,7 +42,7 @@ int getId() {
   return r.nextInt(1<<32);
 }
 
-class Order {
+class Order extends Model {
   List<FileConfig> files = [];
   OrderStatus status = OrderStatus.local;
   DateTime time = DateTime.now();
@@ -64,7 +65,7 @@ class Order {
   }
 }
 
-class FileConfig {
+class FileConfig extends Model {
   String fileName = '', path = '', printSize = '';
   int qtd = 1;
 }

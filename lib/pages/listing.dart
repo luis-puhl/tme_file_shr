@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import 'package:tme_file_shr/main.dart';
 import 'package:tme_file_shr/models.dart';
-import 'package:tme_file_shr/support/provider.dart';
 
 class Listing extends StatelessWidget {
   List<Widget> _buildCards(BuildContext context, List<Order> orders) {
@@ -16,14 +16,14 @@ class Listing extends StatelessWidget {
             label: const Text('Editar'),
             onPressed: () => Navigator.pushNamed(context, '/edit/${order.id}'),
           ),
-          FlatButton.icon(
-            icon: Icon(Icons.send),
-            label: const Text('Enviar'),
-            onPressed: () {
-              final User user = Provider.of(context).value;
-              user.orders.firstWhere((os) => os.id == order.id).status = OrderStatus.uploaded;
-              Provider.of(context).value = user;
-            },
+          ScopedModelDescendant<User>(
+            builder: (context, child, model) => FlatButton.icon(
+              icon: Icon(Icons.send),
+              label: const Text('Enviar'),
+              onPressed: () {
+                model.orders.firstWhere((os) => os.id == order.id).status = OrderStatus.uploaded;
+              },
+            ),
           ),
         ];
       }
@@ -57,24 +57,22 @@ class Listing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of(context).value;
-    print(user);
-    final tiles = _buildCards(context, user.orders);
-    // tiles.add(Text(user.name));
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(TelegramFileShareApp.title),
-      ),
-      body: ListView(
-        children: ListTile.divideTiles(
-          context: context,
-          tiles: tiles,
-        ).toList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.pushNamed(context, '/add'),
-        tooltip: 'Nova Impressão',
-        child: Icon(Icons.add),
+    return ScopedModelDescendant<User>(
+      builder: (context, child, model) => Scaffold(
+        appBar: AppBar(
+          title: Text(TelegramFileShareApp.title),
+        ),
+        body: ListView(
+          children: ListTile.divideTiles(
+            context: context,
+            tiles: _buildCards(context, model.orders),
+          ).toList(),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Navigator.pushNamed(context, '/add'),
+          tooltip: 'Nova Impressão',
+          child: Icon(Icons.add),
+        ),
       ),
     );
   }

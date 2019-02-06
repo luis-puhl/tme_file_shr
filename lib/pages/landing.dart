@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import 'package:tme_file_shr/models.dart';
-import 'package:tme_file_shr/support/provider.dart';
 
 class Landing extends StatelessWidget {
   // Create a text controller. We will use it to retrieve the current value
@@ -11,7 +11,6 @@ class Landing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User user = Provider.of(context).value;
     return Material(
       // color: Colors.greenAccent,
       child: Container(
@@ -55,16 +54,17 @@ class Landing extends StatelessWidget {
               ),
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             ),
-            RaisedButton(
-              onPressed: () {
-                user.name = nameController.text;
-                user.phone = phoneController.text;
-                Provider.of(context).value = user;
-                Navigator.pushNamed(context, '/listing');
-              },
-              child: Text(
-                "Cadastrar",
-                style: TextStyle(fontSize: 25.0),
+            ScopedModelDescendant<User>(
+              builder: (context, child, model) => RaisedButton(
+                onPressed: () {
+                  model.name = nameController.text;
+                  model.phone = phoneController.text;
+                  Navigator.pushNamed(context, '/listing');
+                },
+                child: Text(
+                  "Cadastrar",
+                  style: TextStyle(fontSize: 25.0),
+                ),
               ),
             ),
           ],
