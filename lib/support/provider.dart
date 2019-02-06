@@ -7,7 +7,7 @@ class Provider extends StatefulWidget {
   final Widget child;
   final Function(dynamic) updater;
 
-  static of(BuildContext context) =>
+  static ValueNotifier of(BuildContext context) =>
       (context.inheritFromWidgetOfExactType(_InheritedProvider)
               as _InheritedProvider)
           .data;

@@ -12,7 +12,7 @@ class TelegramFileShareApp extends StatelessWidget {
   static final title = 'Causando Impressão';
   @override
   Widget build(BuildContext context) {
-    return new Provider(
+    return Provider(
       initialValue: User(),
       child: MaterialApp(
         title: title,
@@ -21,6 +21,23 @@ class TelegramFileShareApp extends StatelessWidget {
           '/landing': (BuildContext context) => Landing(),
           '/listing': (BuildContext context) => Listing(),
           '/add': (BuildContext context) => AddFile(),
+        },
+        onGenerateRoute: (RouteSettings settings) {
+          // Split up the path
+          final List<String> path = settings.name.split('/');
+          // First entry should be empty as all paths should start with a '/'
+          assert(path[0] == '');
+          // Only valid path is '/second/<double value>'
+          if (path[1] == 'edit' && path.length == 3) {
+            final id = int.parse(path[2]);
+
+            return MaterialPageRoute<double>(
+              settings: settings,
+              builder: (BuildContext context) => AddFile(id: id),
+            );
+          }
+          // The other paths we support are in the routes table.
+          return null;
         },
       ),
     );

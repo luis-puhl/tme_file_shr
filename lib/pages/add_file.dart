@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:tme_file_shr/support/file.dart';
 
 class AddFile extends StatefulWidget {
+  int id;
+  AddFile({int id}) {
+    this.id = id;
+  }
+
   @override
   _AddFileState createState() => _AddFileState();
 }
