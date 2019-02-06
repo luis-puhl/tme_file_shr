@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import 'package:tme_file_shr/models.dart';
 import 'package:tme_file_shr/id-form.dart';
+import 'package:tme_file_shr/id-card.dart';
 
 void main() {
   final model = Pedido();
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: title,
-      // theme: ThemeData.dark(),
+      theme: ThemeData.dark(),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -39,47 +40,6 @@ class MyApp extends StatelessWidget {
         '/pedido': (context) => IdentificationCard(),
       },
       home: IdentificationForm(),
-    );
-  }
-}
-
-class IdentificationCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(MyApp.title),
-      ),
-      body: Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            _pedidoCard(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  _pedidoCard() {
-    return ScopedModelDescendant<Pedido>(
-      builder: (context, child, model) {
-        if (model == null ||
-            model.status == null ||
-            model.status == PedidoStatus.vazio ||
-            model.nome == null) {
-          return Center(
-            child: Text('Nothign to see'),
-          );
-          // Navigator.pushNamed(context, '/');
-        }
-        return ListTile(
-          leading: Icon(Icons.person),
-          title: Text(model.nome),
-          isThreeLine: true,
-          subtitle: Text(model.toSubTitle()),
-        );
-      },
     );
   }
 }
