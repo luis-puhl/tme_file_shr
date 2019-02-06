@@ -1,10 +1,36 @@
 import 'package:scoped_model/scoped_model.dart';
+import 'package:intl/intl.dart';
+
+enum PedidoStatus { vazio, identificado, preenchido, enviado }
 
 class Pedido extends Model {
+  PedidoStatus status = PedidoStatus.vazio;
   String nome, telefone;
   Loja lojaRetirada;
   DateTime dataRetirada;
   List<GrupoImpressao> grupos;
+
+  String toSubTitle() {
+    return (telefone != null ? telefone : 'null') + '\n' +
+      (lojaRetirada != null ? lojaStr[lojaRetirada] : '') + '\n' +
+      (dataRetirada != null ? DateFormat('dd\/MM\/yyyy', 'ptBR').format(dataRetirada) : '');
+  }
+
+  String toString() {
+    return (nome != null ? nome : 'null') + ', ' +
+      (telefone != null ? telefone : 'null') + ', ' +
+      (lojaRetirada != null ? lojaStr[lojaRetirada] : '') + ', ' +
+      (dataRetirada != null ? DateFormat('dd\/MM\/yyyy', 'ptBR').format(dataRetirada) : '');
+  }
+
+  setIdentification(String nome, String telefone, Loja lojaRetirada, DateTime dataRetirada) {
+    this.nome = nome;
+    this.telefone = telefone;
+    this.lojaRetirada = lojaRetirada;
+    this.dataRetirada = dataRetirada;
+    this.status = PedidoStatus.identificado;
+    this.notifyListeners();
+  }
 }
 
 class GrupoImpressao extends Model {
