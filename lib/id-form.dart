@@ -65,7 +65,7 @@ class _IdentificationFormState extends State<IdentificationForm> {
                       // Scaffold.of(context)
                       //     .showSnackBar(SnackBar(content: Text('Enviado...')));
                       model.setIdentification(
-                          _nome, _telefone, _lojaRetirada, _dataRetirada);
+                          _nome, '+55 ' + _telefone, _lojaRetirada, _dataRetirada);
                       Navigator.pushNamed(context, '/pedido');
                     }
                   },
@@ -105,7 +105,7 @@ class _IdentificationFormState extends State<IdentificationForm> {
         // contentPadding: EdgeInsets.fromLTRB(0, 8, 0, 12),
       ),
       baseStyle: valueStyle,
-      isEmpty: _lojaRetirada == null,
+      // isEmpty: _lojaRetirada == null,
       child: DropdownButtonHideUnderline(
         child: DropdownButton<Loja>(
           style: valueStyle,

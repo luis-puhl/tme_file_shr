@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:tme_file_shr/models.dart';
 import 'package:tme_file_shr/id-form.dart';
 import 'package:tme_file_shr/id-card.dart';
+import 'package:tme_file_shr/add-group.dart';
 
 void main() {
   final model = Pedido();
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/id': (context) => IdentificationForm(),
         '/pedido': (context) => IdentificationCard(),
+        '/group': (context) => PrintGroup(),
       },
       home: IdentificationForm(),
     );

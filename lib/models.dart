@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:intl/intl.dart';
 
@@ -8,7 +9,9 @@ class Pedido extends Model {
   String nome, telefone;
   Loja lojaRetirada;
   DateTime dataRetirada;
-  List<GrupoImpressao> grupos;
+  List<GrupoImpressao> grupos = [];
+
+  static Pedido of(BuildContext context) => ScopedModel.of<Pedido>(context);
 
   String toSubTitle() {
     return (telefone != null ? telefone : 'null') + '\n' +
@@ -34,15 +37,43 @@ class Pedido extends Model {
 }
 
 class GrupoImpressao extends Model {
-  Config config;
-  List<Arquivo> arquivos;
-}
-
-class Config extends Model {
-  TipoGrupo tipoGrupo;
-  int copias;
-  ConfigDoc configDoc;
+  TipoGrupo _tipoGrupo = TipoGrupo.documento;
+  int copias = 1;
+  ConfigDoc configDoc = ConfigDoc();
   ConfigFoto configFoto;
+
+  List<Arquivo> arquivos = [];
+
+  TipoGrupo get tipoGrupo => _tipoGrupo;
+  set tipoGrupo(TipoGrupo tp) {
+    if (tp != _tipoGrupo) {
+      switch (tp) {
+        case TipoGrupo.documento:
+          configDoc = ConfigDoc();
+          configFoto = null;
+          break;
+        case TipoGrupo.foto:
+          configDoc = null;
+          configFoto = ConfigFoto();
+          break;
+        default:
+      }
+    }
+    _tipoGrupo = tp;
+  }
+  get config {
+    switch (_tipoGrupo) {
+      case TipoGrupo.documento:
+        return configDoc;
+      case TipoGrupo.foto:
+        return configFoto;
+    }
+  }
+
+  @override
+  String toString() {
+    return "tipoGrupo: $tipoGrupo, copias: $copias, arquivos: ${arquivos.length} config: $config";
+  }
 }
 
 class Arquivo extends Model {
@@ -58,7 +89,17 @@ Map<Loja, String> lojaStr = {
 };
 
 enum TipoGrupo { documento, foto, }
+Map<TipoGrupo, String> tipoGrupoStr = {
+  TipoGrupo.documento: 'Documentos',
+  TipoGrupo.foto: 'Fotos',
+};
 enum TamanhoDoc { a3, a4, a5, a6, }
+Map<TamanhoDoc, String> tamanhoDocStr = {
+  TamanhoDoc.a3: 'A3',
+  TamanhoDoc.a4: 'A4',
+  TamanhoDoc.a5: 'A5',
+  TamanhoDoc.a6: 'A6',
+};
 enum TamanhoFoto {
   mm152x102,
   mm152x210,
@@ -95,16 +136,30 @@ Map<TamanhoFoto, String> tamanhoFotoStr = {
 };
 
 class ConfigDoc {
-  TamanhoDoc tamanhoDoc;
+  TamanhoDoc tamanhoDoc = TamanhoDoc.a4;
   // frente, frente_verso,
-  bool duplex;
+  bool duplex = false;
   // colorido ou PB
-  bool colorido;
+  bool colorido = false;
+
+  @override
+  String toString() {
+    return "tamanho: $tamanhoDoc, duplex: $duplex, colorido: $colorido";
+  }
 }
 
 enum TipoPapelFoto { brilho, fosco, }
+Map<TipoPapelFoto, String> tipoPapelFotoStr = {
+  TipoPapelFoto.brilho: 'Brilhante Tradicional',
+  TipoPapelFoto.fosco: 'Fosco Premium',
+};
 
 class ConfigFoto {
-  TamanhoFoto tamanhoFoto;
-  TipoPapelFoto tipoPapelFoto;
+  TamanhoFoto tamanhoFoto = TamanhoFoto.mm203x305;
+  TipoPapelFoto tipoPapelFoto = TipoPapelFoto.brilho;
+
+  @override
+  String toString() {
+    return "tamanhoFoto: $tamanhoFoto, tipoPapelFoto: $tipoPapelFoto";
+  }
 }
