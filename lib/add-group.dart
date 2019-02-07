@@ -14,17 +14,34 @@ class _PrintGroupState extends State<PrintGroup> {
   GrupoImpressao group = GrupoImpressao();
 
   TextStyle valueStyle;
-  // group.config
-  // TipoGrupo tipoGrupo;
-  // int copias;
-  // ConfigDoc configDoc;
-  // ConfigFoto configFoto;
 
   @override
   Widget build(BuildContext context) {
     // print(group);
     this.valueStyle = Theme.of(context).textTheme.title;
     final padding = SizedBox(height: 8.0);
+    Widget config = padding;
+    switch (this.group.tipoGrupo) {
+      case TipoGrupo.documento:
+        config = DocConfigForm(
+          onTamanhoDocChanged: (TamanhoDoc newValue) => setState(() {this.group.configDoc?.tamanhoDoc = newValue;}),
+          onDuplexChanged: (bool newValue) => setState(() {this.group.configDoc?.duplex = newValue;}),
+          onColoridoChanged: (bool newValue) => setState(() {this.group.configDoc?.colorido = newValue;}),
+          tamanhoDoc: this.group.configDoc?.tamanhoDoc ?? TamanhoDoc.a4,
+          duplex: this.group.configDoc?.duplex ?? false,
+          colorido: this.group.configDoc?.colorido ?? false,
+        );
+        break;
+      case TipoGrupo.foto:
+        config = FotoConfigForm(
+          onTamanhoFotoChanged: (TamanhoFoto newValue) => setState(() {this.group.configFoto?.tamanhoFoto = newValue;}),
+          onTipoPapelFotoChanged: (TipoPapelFoto newValue) => setState(() {this.group.configFoto?.tipoPapelFoto = newValue;}),
+          tamanhoFoto: this.group.configFoto?.tamanhoFoto ?? TamanhoFoto.mm500x750,
+          tipoPapelFoto: this.group.configFoto?.tipoPapelFoto ?? TipoPapelFoto.brilho,
+        );
+        break;
+      default:
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(MyApp.title),
@@ -45,24 +62,29 @@ class _PrintGroupState extends State<PrintGroup> {
               onChanged: (TipoGrupo newValue) => setState(() {this.group.tipoGrupo = newValue;}),
             ),
             padding,
-            this.group.tipoGrupo == TipoGrupo.documento ?
-              DocConfigForm(
-                onTamanhoDocChanged: (TamanhoDoc newValue) => setState(() {this.group.configDoc?.tamanhoDoc = newValue;}),
-                onDuplexChanged: (bool newValue) => setState(() {this.group.configDoc?.duplex = newValue;}),
-                onColoridoChanged: (bool newValue) => setState(() {this.group.configDoc?.colorido = newValue;}),
-                tamanhoDoc: this.group.configDoc?.tamanhoDoc ?? TamanhoDoc.a4,
-                duplex: this.group.configDoc?.duplex ?? false,
-                colorido: this.group.configDoc?.colorido ?? false,
-              )
-              :
-              this.group.tipoGrupo == TipoGrupo.foto ?
-                FotoConfigForm(
-                  onTamanhoFotoChanged: (TamanhoFoto newValue) => setState(() {this.group.configFoto?.tamanhoFoto = newValue;}),
-                  onTipoPapelFotoChanged: (TipoPapelFoto newValue) => setState(() {this.group.configFoto?.tipoPapelFoto = newValue;}),
-                  tamanhoFoto: this.group.configFoto?.tamanhoFoto ?? TamanhoFoto.mm500x750,
-                  tipoPapelFoto: this.group.configFoto?.tipoPapelFoto ?? TipoPapelFoto.brilho,
-                )
-              : padding,
+            config,
+            TextFormField(
+              initialValue: '1',
+              style: valueStyle,
+              keyboardType: TextInputType.number,
+              validator: (String value) {
+                int intVal = int.tryParse(value);
+                if (value.isEmpty || intVal == null || intVal <= 0) {
+                  return 'Número de cópias é obrigatório';
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                icon: Icon(Icons.filter_none),
+                labelText: 'Cópias',
+              ),
+              onSaved: (String newValue) => this.group.copias = int.tryParse(newValue),
+            ),
+            RaisedButton.icon(
+              icon: Icon(Icons.attach_file),
+              label: Text('Adicinar Arquivos'),
+              onPressed: () => print('asdf'),
+            ),
           ],
         ),
       ),
@@ -120,7 +142,7 @@ class DocConfigForm extends StatelessWidget {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: Icon(Icons.style),
+                child: Icon(Icons.color_lens),
               ),
               Expanded(child: Text('Colorido', style: Theme.of(context).textTheme.title,)),
               Switch(
