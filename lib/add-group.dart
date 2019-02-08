@@ -9,7 +9,7 @@ class PrintGroup extends StatefulWidget {
   PrintGroup({
     Key key,
     this.id,
-  }): super(key: key);
+  }) : super(key: key);
 
   @override
   _PrintGroupState createState() => _PrintGroupState(id: this.id);
@@ -42,7 +42,8 @@ class _PrintGroupState extends State<PrintGroup> {
           ),
           value: _tamanhoDoc,
           onSaved: (TamanhoDoc newValue) => _tamanhoDoc = newValue,
-          onChanged: (TamanhoDoc newValue) => setState(() => _tamanhoDoc = newValue),
+          onChanged: (TamanhoDoc newValue) =>
+              setState(() => _tamanhoDoc = newValue),
           items: tamanhoDocStr.entries
               .map((mapEntry) => DropdownMenuItem<TamanhoDoc>(
                     child: Text(mapEntry.value),
@@ -96,7 +97,8 @@ class _PrintGroupState extends State<PrintGroup> {
           ),
           value: _tamanhoFoto,
           onSaved: (TamanhoFoto newValue) => _tamanhoFoto = newValue,
-          onChanged: (TamanhoFoto newValue) => setState(() => _tamanhoFoto = newValue),
+          onChanged: (TamanhoFoto newValue) =>
+              setState(() => _tamanhoFoto = newValue),
           items: tamanhoFotoStr.entries
               .map((mapEntry) => DropdownMenuItem<TamanhoFoto>(
                     child: Text(mapEntry.value),
@@ -126,15 +128,13 @@ class _PrintGroupState extends State<PrintGroup> {
   @override
   void initState() {
     var grupos = Pedido.of(context).grupos;
-    GrupoImpressao group = grupos.firstWhere(
-      (grupo) => grupo.id == this.id,
-      orElse: () {
-        var group = GrupoImpressao();
-        id = group.id;
-        grupos.add(group);
-        return group;
-      }
-    );
+    GrupoImpressao group =
+        grupos.firstWhere((grupo) => grupo.id == this.id, orElse: () {
+      var group = GrupoImpressao();
+      id = group.id;
+      grupos.add(group);
+      return group;
+    });
     _tamanhoDoc = group.configDoc?.tamanhoDoc;
     _duplex = group.configDoc?.duplex;
     _colorido = group.configDoc?.colorido;
@@ -163,7 +163,8 @@ class _PrintGroupState extends State<PrintGroup> {
                 ),
                 value: _tipoGrupo,
                 onSaved: (TipoGrupo newValue) => _tipoGrupo = newValue,
-                onChanged: (TipoGrupo newValue) => setState(() => _tipoGrupo = newValue),
+                onChanged: (TipoGrupo newValue) =>
+                    setState(() => _tipoGrupo = newValue),
                 items: tipoGrupoStr.entries
                     .map((mapEntry) => DropdownMenuItem<TipoGrupo>(
                           child: Text(mapEntry.value),
@@ -192,34 +193,40 @@ class _PrintGroupState extends State<PrintGroup> {
             ),
             // ------------**------------------------*-*-*------------------
             Divider(),
-          ].followedBy(
-            _tipoGrupo == TipoGrupo.documento ? docConfigs() : fotoConfigs(),
-          ).toList().followedBy(
+          ]
+              .followedBy(
+                _tipoGrupo == TipoGrupo.documento
+                    ? docConfigs()
+                    : fotoConfigs(),
+              )
+              .toList()
+              .followedBy(
             [
               // ------------**------------------------*-*-*------------------
               Divider(),
               ListTile(
                 title: RaisedButton.icon(
-                  icon: Icon(Icons.attach_file),
-                  label: Text('Salvar Configuração'),
-                  onPressed: () {
-                    FormState formState = _formKey.currentState;
-                    if (formState.validate()) {
-                      formState.save();
-                      GrupoImpressao group = Pedido.of(context)?.grupos?.firstWhere((grupo) => grupo.id == this.id);
-                      group.setConfig(
-                        tamanhoDoc: _tamanhoDoc,
-                        duplex: _duplex,
-                        colorido: _colorido,
-                        tamanhoFoto: _tamanhoFoto,
-                        tipoPapelFoto: _tipoPapelFoto,
-                        tipoGrupo: _tipoGrupo,
-                        copias: _copias,
-                      );
-                      Navigator.pop(context, group);
-                    }
-                  }
-                ),
+                    icon: Icon(Icons.attach_file),
+                    label: Text('Salvar Configuração'),
+                    onPressed: () {
+                      FormState formState = _formKey.currentState;
+                      if (formState.validate()) {
+                        formState.save();
+                        GrupoImpressao group = Pedido.of(context)
+                            ?.grupos
+                            ?.firstWhere((grupo) => grupo.id == this.id);
+                        group.setConfig(
+                          tamanhoDoc: _tamanhoDoc,
+                          duplex: _duplex,
+                          colorido: _colorido,
+                          tamanhoFoto: _tamanhoFoto,
+                          tipoPapelFoto: _tipoPapelFoto,
+                          tipoGrupo: _tipoGrupo,
+                          copias: _copias,
+                        );
+                        Navigator.pop(context, group);
+                      }
+                    }),
               ),
             ],
           ).toList(),

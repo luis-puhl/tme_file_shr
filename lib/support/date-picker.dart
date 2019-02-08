@@ -92,7 +92,6 @@ class DateTimePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle valueStyle = Theme.of(context).textTheme.title;
     final List<Widget> dateComp = <Widget>[
       Expanded(
         flex: 4,
@@ -100,7 +99,6 @@ class DateTimePicker extends StatelessWidget {
           icon: icon,
           labelText: labelText,
           valueText: DateFormat.yMMMd().format(selectedDate),
-          valueStyle: valueStyle,
           onPressed: () { _selectDate(context); },
         ),
       ),
@@ -112,7 +110,6 @@ class DateTimePicker extends StatelessWidget {
           flex: 3,
           child: _InputDropdown(
             valueText: selectedTime.format(context),
-            valueStyle: valueStyle,
             onPressed: () { _selectTime(context); },
           ),
         ),
