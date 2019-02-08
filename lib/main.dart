@@ -41,6 +41,21 @@ class MyApp extends StatelessWidget {
         '/pedido': (context) => IdentificationCard(),
         '/group': (context) => PrintGroup(),
       },
+      onGenerateRoute: (RouteSettings settings) {
+        WidgetBuilder builder;
+        List<String> path = settings.name.split('/');
+        print(path);
+        switch (path[0]) {
+          case '/group':
+            int id = int.tryParse(path[1]);
+            if (id != null) {
+              builder = (BuildContext _) => PrintGroup(id: id);
+            }
+            break;
+          default:
+        }
+        MaterialPageRoute(builder: builder, settings: settings);
+      },
       home: IdentificationForm(),
     );
   }

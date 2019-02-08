@@ -8,7 +8,7 @@ class EnumPicker<T> extends StatelessWidget {
   final Map<T, String> map;
   final T originalValue;
   final Function onChanged;
-  
+
   EnumPicker({
     Key key,
     this.iconData,
@@ -22,11 +22,36 @@ class EnumPicker<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(right: 10.0),
+          child: Icon(iconData),
+        ),
+        Expanded(
+          child: DropdownButtonFormField<T>(
+            // style: textStyle,
+            // isDense: false, // for InputDecorator
+            // isExpanded: true,
+            value: originalValue,
+            onChanged: onChanged,
+            items: map.entries
+                .map((mapEntry) => DropdownMenuItem<T>(
+                      child: Text(mapEntry.value, style: textStyle),
+                      value: mapEntry.key,
+                    ))
+                .toList(),
+          ),
+        ),
+      ],
+    );
     return InputDecorator(
       decoration: InputDecoration(
         icon: Icon(iconData),
         labelText: labelText,
         hintText: hintText,
+        isDense: true,
         // contentPadding: EdgeInsets.fromLTRB(0, 8, 0, 12),
       ),
       baseStyle: textStyle,

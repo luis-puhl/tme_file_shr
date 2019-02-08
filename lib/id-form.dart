@@ -151,6 +151,7 @@ class _IdentificationFormState extends State<IdentificationForm> {
   _nomeField() {
     return TextFormField(
       style: valueStyle,
+      textCapitalization: TextCapitalization.words,
       decoration: const InputDecoration(
         icon: Icon(Icons.person),
         labelText: 'Nome',

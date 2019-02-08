@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:intl/intl.dart';
+import 'dart:math';
 
 enum PedidoStatus { vazio, identificado, preenchido, enviado }
 
@@ -37,6 +38,7 @@ class Pedido extends Model {
 }
 
 class GrupoImpressao extends Model {
+  final int id = Random.secure().nextInt(2^64);
   TipoGrupo _tipoGrupo = TipoGrupo.documento;
   int copias = 1;
   ConfigDoc configDoc = ConfigDoc();
@@ -72,7 +74,34 @@ class GrupoImpressao extends Model {
 
   @override
   String toString() {
-    return "tipoGrupo: $tipoGrupo, copias: $copias, arquivos: ${arquivos.length} config: $config";
+    return "id: $id, tipoGrupo: $tipoGrupo, copias: $copias, arquivos: ${arquivos.length} config: $config";
+  }
+
+  void setConfig({
+    TamanhoDoc tamanhoDoc,
+    Duplex duplex,
+    Colorido colorido,
+    TamanhoFoto tamanhoFoto,
+    TipoPapelFoto tipoPapelFoto,
+    TipoGrupo tipoGrupo,
+    int copias,
+  }) {
+    this.copias = max<int>(1, copias);
+    this.tipoGrupo = tipoGrupo;
+    switch (_tipoGrupo) {
+      case TipoGrupo.documento:
+        configDoc
+          ..colorido = colorido
+          ..duplex = duplex
+          ..tamanhoDoc = tamanhoDoc;
+        break;
+      case TipoGrupo.foto:
+        configFoto
+          ..tamanhoFoto = tamanhoFoto
+          ..tipoPapelFoto = tipoPapelFoto;
+    }
+    print(this);
+    this.notifyListeners();
   }
 }
 
@@ -135,12 +164,15 @@ Map<TamanhoFoto, String> tamanhoFotoStr = {
   TamanhoFoto.mm600x900: '60 x 90 cm',
 };
 
+enum Duplex { duplex, somenteFrente, }
+enum Colorido { colorido, pretoBranco, }
+
 class ConfigDoc {
   TamanhoDoc tamanhoDoc = TamanhoDoc.a4;
   // frente, frente_verso,
-  bool duplex = false;
+  Duplex duplex = Duplex.somenteFrente;
   // colorido ou PB
-  bool colorido = false;
+  Colorido colorido = Colorido.pretoBranco;
 
   @override
   String toString() {
