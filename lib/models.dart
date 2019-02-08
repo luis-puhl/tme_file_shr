@@ -76,6 +76,15 @@ class GrupoImpressao extends Model {
   String toString() {
     return "id: $id, tipoGrupo: $tipoGrupo, copias: $copias, arquivos: ${arquivos.length} config: $config";
   }
+  
+  String toSubTitleString() {
+    if (_tipoGrupo == TipoGrupo.documento) {
+      return "$copias cópias\n"
+        "${coloridoStr[configDoc.colorido]}\n"
+        "${tamanhoDocStr[configDoc.tamanhoDoc]} ${duplexStr[configDoc.duplex]}";
+    }
+    return "$copias cópias\n${configFoto.tamanhoFoto}\n${configFoto.tipoPapelFoto}";
+  }
 
   void setConfig({
     TamanhoDoc tamanhoDoc,
@@ -100,7 +109,6 @@ class GrupoImpressao extends Model {
           ..tamanhoFoto = tamanhoFoto
           ..tipoPapelFoto = tipoPapelFoto;
     }
-    print(this);
     this.notifyListeners();
   }
 }
@@ -165,7 +173,15 @@ Map<TamanhoFoto, String> tamanhoFotoStr = {
 };
 
 enum Duplex { duplex, somenteFrente, }
+Map<Duplex, String> duplexStr = {
+  Duplex.somenteFrente: 'Frente',
+  Duplex.duplex: 'Duplex',
+};
 enum Colorido { colorido, pretoBranco, }
+Map<Colorido, String> coloridoStr = {
+  Colorido.colorido: 'Colorido',
+  Colorido.pretoBranco: 'Preto e Branco',
+};
 
 class ConfigDoc {
   TamanhoDoc tamanhoDoc = TamanhoDoc.a4;
