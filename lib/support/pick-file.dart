@@ -22,28 +22,40 @@ class _PickFileState extends State<PickFile> {
   buildGridTile(BuildContext context, Arquivo arq) {
     return GridTile(
       footer: GridTileBar(
-        title: Text(arq.filename, overflow: TextOverflow.ellipsis,),
-        backgroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+        title: Text(
+          arq.filename,
+          overflow: TextOverflow.ellipsis,
+        ),
+        backgroundColor:
+            Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
         trailing: IconButton(
           icon: Icon(Icons.delete),
           color: Colors.white,
           onPressed: () => setState(() {
-            widget.grupo.arquivos.removeWhere((arqivo) => arqivo.path == arq.path);
-          }),
+                widget.grupo.arquivos
+                    .removeWhere((arqivo) => arqivo.path == arq.path);
+              }),
         ),
       ),
       child: Container(
         color: Theme.of(context).colorScheme.primaryVariant.withOpacity(0.12),
-        child: isDoc ? 
-          Center(child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(arq.filename, softWrap: true,),
-              Icon(Icons.insert_drive_file, size: 50,)
-            ],
-          ),)
-          : 
-          Image.file(File(arq.path)),
+        child: isDoc
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      arq.filename,
+                      softWrap: true,
+                    ),
+                    Icon(
+                      Icons.insert_drive_file,
+                      size: 50,
+                    )
+                  ],
+                ),
+              )
+            : Image.file(File(arq.path)),
       ),
     );
   }
@@ -68,7 +80,9 @@ class _PickFileState extends State<PickFile> {
         crossAxisSpacing: 16.0,
         mainAxisSpacing: 16.0,
         crossAxisCount: 2,
-        children: (widget.grupo.arquivos.map<Widget>((Arquivo arq) => buildGridTile(context, arq))).followedBy([
+        children: (widget.grupo.arquivos
+                .map<Widget>((Arquivo arq) => buildGridTile(context, arq)))
+            .followedBy([
           RaisedButton.icon(
             icon: Icon(Icons.attach_file),
             label: Text('Adicionar\n' + (isDoc ? ' documentos' : ' fotos')),

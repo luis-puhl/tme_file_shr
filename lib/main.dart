@@ -42,19 +42,17 @@ class MyApp extends StatelessWidget {
         '/group': (context) => PrintGroup(),
       },
       onGenerateRoute: (RouteSettings settings) {
-        WidgetBuilder builder;
         List<String> path = settings.name.split('/');
-        print(path);
-        switch (path[0]) {
-          case '/group':
-            int id = int.tryParse(path[1]);
+        switch (path[1]) {
+          case 'group':
+            int id = int.tryParse(path[2]);
             if (id != null) {
-              builder = (BuildContext _) => PrintGroup(id: id);
+              return MaterialPageRoute(builder: (BuildContext _) => PrintGroup(id: id), settings: settings);
             }
             break;
           default:
         }
-        MaterialPageRoute(builder: builder, settings: settings);
+        return null;
       },
       home: IdentificationForm(),
     );

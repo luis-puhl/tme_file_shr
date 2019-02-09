@@ -85,7 +85,15 @@ class IdentificationCard extends StatelessWidget {
                     title: Text(grupo.arquivos.length.toString() + (grupo.tipoGrupo == TipoGrupo.documento ? ' documentos' : ' fotos')),
                     isThreeLine: true,
                     subtitle: Text(grupo.toSubTitleString()),
-                  ),
+                    trailing: Padding(
+                      padding: EdgeInsets.only(top: 30),
+                      child: IconButton(
+                        color: Theme.of(context).colorScheme.primary,
+                        icon: Icon(Icons.edit),
+                        onPressed: () => Navigator.pushNamed(context, '/group/' + grupo.id.toString()),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
