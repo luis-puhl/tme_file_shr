@@ -83,7 +83,8 @@ class GrupoImpressao extends Model {
         "${coloridoStr[configDoc.colorido]}\n"
         "${tamanhoDocStr[configDoc.tamanhoDoc]} ${duplexStr[configDoc.duplex]}";
     }
-    return "$copias cópias\n${configFoto.tamanhoFoto}\n${configFoto.tipoPapelFoto}";
+    return "$copias cópias\n"
+      "${tamanhoFotoStr[configFoto.tamanhoFoto]} ${tipoPapelFotoStr[configFoto.tipoPapelFoto]}";
   }
 
   void setConfig({
@@ -115,6 +116,12 @@ class GrupoImpressao extends Model {
 
 class Arquivo extends Model {
   String path, filename;
+
+  Arquivo({
+    this.path,
+  }) {
+    filename = path.split('/').last;
+  }
 }
 
 enum Loja { loja1, loja2, loja3, loja4, }

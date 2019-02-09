@@ -5,7 +5,6 @@ import 'package:tme_file_shr/main.dart';
 import 'package:tme_file_shr/models.dart';
 
 class IdentificationCard extends StatelessWidget {
-  Scaffold scaffold;
   _navigateAndDisplaySelection(BuildContext context) async {
     var result = await Navigator.pushNamed(context, '/group');
     GrupoImpressao grupo;
@@ -74,26 +73,39 @@ class IdentificationCard extends StatelessWidget {
         ]
         .followedBy(
           pedido.grupos.map((GrupoImpressao grupo) => ListTile(
-            title: Card(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(
-                      (grupo.tipoGrupo == TipoGrupo.documento ? Icons.file_upload : Icons.photo_album),
-                      size: 50,
-                    ),
-                    title: Text(grupo.arquivos.length.toString() + (grupo.tipoGrupo == TipoGrupo.documento ? ' documentos' : ' fotos')),
-                    isThreeLine: true,
-                    subtitle: Text(grupo.toSubTitleString()),
-                  ),
-                ],
-              ),
-            ),
+            title: PrintGroupCard(grupo: grupo,),
           ))
         )
         .toList()
         ,
+      ),
+    );
+  }
+}
+
+class PrintGroupCard extends StatelessWidget {
+  final GrupoImpressao grupo;
+  
+  PrintGroupCard({
+    this.grupo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            leading: Icon(
+              (grupo.tipoGrupo == TipoGrupo.documento ? Icons.file_upload : Icons.photo_album),
+              size: 50,
+            ),
+            title: Text(grupo.arquivos.length.toString() + (grupo.tipoGrupo == TipoGrupo.documento ? ' documentos' : ' fotos')),
+            isThreeLine: true,
+            subtitle: Text(grupo.toSubTitleString()),
+          ),
+        ],
       ),
     );
   }

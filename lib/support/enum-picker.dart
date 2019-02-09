@@ -46,30 +46,5 @@ class EnumPicker<T> extends StatelessWidget {
         ),
       ],
     );
-    return InputDecorator(
-      decoration: InputDecoration(
-        icon: Icon(iconData),
-        labelText: labelText,
-        hintText: hintText,
-        isDense: true,
-        // contentPadding: EdgeInsets.fromLTRB(0, 8, 0, 12),
-      ),
-      baseStyle: textStyle,
-      isEmpty: originalValue == null,
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          style: textStyle,
-          isDense: true, // for InputDecorator
-          value: originalValue,
-          onChanged: onChanged,
-          items: map.entries
-              .map((mapEntry) => DropdownMenuItem<T>(
-                    child: Text(mapEntry.value, style: textStyle),
-                    value: mapEntry.key,
-                  ))
-              .toList(),
-        ),
-      ),
-    );
   }
 }

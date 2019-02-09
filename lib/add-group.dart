@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:tme_file_shr/models.dart';
 import 'package:tme_file_shr/main.dart';
 import 'package:tme_file_shr/support/form-radio.dart';
+import 'package:tme_file_shr/support/pick-file.dart';
 
 class PrintGroup extends StatefulWidget {
   final int id;
@@ -96,6 +98,7 @@ class _PrintGroupState extends State<PrintGroup> {
             hintText: 'Escolha um tamaho de folha',
           ),
           value: _tamanhoFoto,
+          validator: (TamanhoFoto t) => t == null ? 'Tamanho deve ser especificado' : null,
           onSaved: (TamanhoFoto newValue) => _tamanhoFoto = newValue,
           onChanged: (TamanhoFoto newValue) =>
               setState(() => _tamanhoFoto = newValue),
@@ -138,11 +141,32 @@ class _PrintGroupState extends State<PrintGroup> {
     _tamanhoDoc = group.configDoc?.tamanhoDoc;
     _duplex = group.configDoc?.duplex;
     _colorido = group.configDoc?.colorido;
-    _tamanhoFoto = group.configFoto?.tamanhoFoto;
-    _tipoPapelFoto = group.configFoto?.tipoPapelFoto;
+    _tamanhoFoto = group.configFoto?.tamanhoFoto ?? TamanhoFoto.mm203x254;
+    _tipoPapelFoto = group.configFoto?.tipoPapelFoto ?? TipoPapelFoto.brilho;
     _tipoGrupo = group.tipoGrupo;
     _copias = group.copias;
     super.initState();
+  }
+
+  _salvarConfig() async {
+    FormState formState = _formKey.currentState;
+    if (formState.validate()) {
+      formState.save();
+      GrupoImpressao group = Pedido.of(context)
+          ?.grupos
+          ?.firstWhere((grupo) => grupo.id == this.id);
+      group.setConfig(
+        tamanhoDoc: _tamanhoDoc,
+        duplex: _duplex,
+        colorido: _colorido,
+        tamanhoFoto: _tamanhoFoto,
+        tipoPapelFoto: _tipoPapelFoto,
+        tipoGrupo: _tipoGrupo,
+        copias: _copias,
+      );
+      GrupoImpressao filesGroup = await Navigator.push<GrupoImpressao>(context, MaterialPageRoute(builder: (context) => PickFile(grupo: group,)),);
+      Navigator.pop(context, filesGroup);
+    }
   }
 
   @override
@@ -206,27 +230,10 @@ class _PrintGroupState extends State<PrintGroup> {
               Divider(),
               ListTile(
                 title: RaisedButton.icon(
-                    icon: Icon(Icons.attach_file),
-                    label: Text('Salvar Configuração'),
-                    onPressed: () {
-                      FormState formState = _formKey.currentState;
-                      if (formState.validate()) {
-                        formState.save();
-                        GrupoImpressao group = Pedido.of(context)
-                            ?.grupos
-                            ?.firstWhere((grupo) => grupo.id == this.id);
-                        group.setConfig(
-                          tamanhoDoc: _tamanhoDoc,
-                          duplex: _duplex,
-                          colorido: _colorido,
-                          tamanhoFoto: _tamanhoFoto,
-                          tipoPapelFoto: _tipoPapelFoto,
-                          tipoGrupo: _tipoGrupo,
-                          copias: _copias,
-                        );
-                        Navigator.pop(context, group);
-                      }
-                    }),
+                  icon: Icon(Icons.check),
+                  label: Text('Salvar Configuração'),
+                  onPressed: _salvarConfig,
+                ),
               ),
             ],
           ).toList(),
