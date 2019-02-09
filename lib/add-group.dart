@@ -177,66 +177,69 @@ class _PrintGroupState extends State<PrintGroup> {
       ),
       body: Form(
         key: _formKey,
-        child: ListView(
-          children: <Widget>[
-            ListTile(
-              title: DropdownButtonFormField<TipoGrupo>(
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.assignment),
-                  labelText: 'Tipo de impressão',
+        child: Hero(
+          tag: 'print-group-card',
+          child: ListView(
+            children: <Widget>[
+              ListTile(
+                title: DropdownButtonFormField<TipoGrupo>(
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.assignment),
+                    labelText: 'Tipo de impressão',
+                  ),
+                  value: _tipoGrupo,
+                  onSaved: (TipoGrupo newValue) => _tipoGrupo = newValue,
+                  onChanged: (TipoGrupo newValue) =>
+                      setState(() => _tipoGrupo = newValue),
+                  items: tipoGrupoStr.entries
+                      .map((mapEntry) => DropdownMenuItem<TipoGrupo>(
+                            child: Text(mapEntry.value),
+                            value: mapEntry.key,
+                          ))
+                      .toList(),
                 ),
-                value: _tipoGrupo,
-                onSaved: (TipoGrupo newValue) => _tipoGrupo = newValue,
-                onChanged: (TipoGrupo newValue) =>
-                    setState(() => _tipoGrupo = newValue),
-                items: tipoGrupoStr.entries
-                    .map((mapEntry) => DropdownMenuItem<TipoGrupo>(
-                          child: Text(mapEntry.value),
-                          value: mapEntry.key,
-                        ))
-                    .toList(),
               ),
-            ),
-            ListTile(
-              title: TextFormField(
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.filter_none),
-                  labelText: 'Cópias',
+              ListTile(
+                title: TextFormField(
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.filter_none),
+                    labelText: 'Cópias',
+                  ),
+                  initialValue: _copias.toString(),
+                  keyboardType: TextInputType.number,
+                  onSaved: (String newValue) => _copias = int.tryParse(newValue),
+                  validator: (String value) {
+                    int intVal = int.tryParse(value);
+                    if (value.isEmpty || intVal == null || intVal <= 0) {
+                      return 'Número de cópias é obrigatório';
+                    }
+                    return null;
+                  },
                 ),
-                initialValue: _copias.toString(),
-                keyboardType: TextInputType.number,
-                onSaved: (String newValue) => _copias = int.tryParse(newValue),
-                validator: (String value) {
-                  int intVal = int.tryParse(value);
-                  if (value.isEmpty || intVal == null || intVal <= 0) {
-                    return 'Número de cópias é obrigatório';
-                  }
-                  return null;
-                },
               ),
-            ),
-            // ------------**------------------------*-*-*------------------
-            Divider(),
-          ]
-              .followedBy(
-                _tipoGrupo == TipoGrupo.documento
-                    ? docConfigs()
-                    : fotoConfigs(),
-              )
-              .toList()
-              .followedBy(
-            [
               // ------------**------------------------*-*-*------------------
               Divider(),
-              ListTile(
-                title: RaisedButton.icon(
-                  icon: Icon(Icons.check),
-                  label: Text('Salvar Configuração'),
-                  onPressed: _salvarConfig,
+            ]
+                .followedBy(
+                  _tipoGrupo == TipoGrupo.documento
+                      ? docConfigs()
+                      : fotoConfigs(),
+                )
+                .toList()
+                .followedBy(
+              [
+                // ------------**------------------------*-*-*------------------
+                Divider(),
+                ListTile(
+                  title: RaisedButton.icon(
+                    icon: Icon(Icons.check),
+                    label: Text('Salvar Configuração'),
+                    onPressed: _salvarConfig,
+                  ),
                 ),
-              ),
-            ],
-          ).toList(),
+              ],
+            ).toList(),
+          ),
         ),
       ),
     );
