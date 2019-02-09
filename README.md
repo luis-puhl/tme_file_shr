@@ -2,8 +2,6 @@
 
 Telegram File Share: an app to share files to a telegram bot.
 
-A new Flutter project.
-
 ## Getting Started
 
 This project is a starting point for a Flutter application.
@@ -16,3 +14,16 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our 
 [online documentation](https://flutter.io/docs), which offers tutorials, 
 samples, guidance on mobile development, and a full API reference.
+
+# To Read
+
+A list of links, for me to read (aka: my chrome has too many tabs).
+
+- (9/10) https://ericwindmill.com/posts/inherited_widget/
+- (10/10) https://www.youtube.com/watch?v=zKXz3pUkw9A
+- (7/10) https://github.com/tensor-programming/flutter_scoped_tutorial/blob/master/lib/main.dart
+- (10/10) https://medium.com/@kashifmin/flutter-login-app-using-rest-api-and-sqflite-b4815aed2149
+- (6/10) https://flutterbyexample.com/forms-2-sliders-and-buttons
+- (8/10) https://github.com/ericwindmill/flutter_by_example_apps
+- (8/10) https://codingwithjoe.com/building-forms-with-flutter/ and https://github.com/jebright/flutter_form_app/tree/master/lib
+- (?/10) https://www.youtube.com/channel/UCrTnsT4OYZ53l0QGKqLeD5Q/videos
