@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:dotenv/dotenv.dart' as dotEnv;
 
 import 'package:tme_file_shr/models.dart';
 import 'package:tme_file_shr/id-form.dart';
 import 'package:tme_file_shr/id-card.dart';
 import 'package:tme_file_shr/add-group.dart';
 
+String telegramToken;
 void main() {
+  dotEnv.load();
   final model = Pedido();
 
   // You could optionally connect [model] with some database here.

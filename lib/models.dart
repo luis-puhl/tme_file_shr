@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
+import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
+
+import 'package:archive/archive.dart';
+import 'package:archive/archive_io.dart';
+import 'package:teledart/teledart.dart';
+import 'package:teledart/telegram.dart';
+import 'package:crypto/crypto.dart';
+import 'package:dotenv/dotenv.dart' as dotEnv;
+
+import 'package:tme_file_shr/support/telegram-patch.dart';
 
 int getId() {
   Random r = Random.secure();
@@ -26,10 +38,10 @@ class Pedido extends Model {
   }
 
   String toString() {
-    return (nome != null ? nome : 'null') + ', ' +
-      (telefone != null ? telefone : 'null') + ', ' +
-      (lojaRetirada != null ? lojaStr[lojaRetirada] : '') + ', ' +
-      (dataRetirada != null ? DateFormat('dd\/MM\/yyyy', 'ptBR').format(dataRetirada) : '');
+    return 'nome: ' + (nome != null ? nome : 'null') + ', ' +
+      'telefone: ' + (telefone != null ? telefone : 'null') + ', ' +
+      'loja Retirada: ' + (lojaRetirada != null ? lojaStr[lojaRetirada] : '') + ', ' +
+      'data Retirada: ' + (dataRetirada != null ? DateFormat('dd\/MM\/yyyy', 'ptBR').format(dataRetirada) : '');
   }
 
   setIdentification(String nome, String telefone, Loja lojaRetirada, DateTime dataRetirada) {
@@ -38,6 +50,64 @@ class Pedido extends Model {
     this.lojaRetirada = lojaRetirada;
     this.dataRetirada = dataRetirada;
     this.status = PedidoStatus.identificado;
+    this.notifyListeners();
+  }
+
+  bool isEnviando = false;
+  bool isEnviado = false;
+  enviar() async {
+    isEnviando = true;
+    this.notifyListeners();
+    await Future.delayed(Duration(seconds: 3));
+
+    String ordem = 'ordem_${this.nome}';
+    String message = '# Informações gerais\n'
+      '\nCliente: $nome'
+      '\nTelefone: $telefone'
+      '\nData da emissão: ${DateFormat('dd\/MM\/yyyy', 'ptBR').format(DateTime.now())}'
+      '\nData de entrega: ${DateFormat('dd\/MM\/yyyy', 'ptBR').format(dataRetirada)}'
+      '\n'
+      ;
+    String caption = message.toString();
+
+    Archive archive = Archive();
+
+    for (var grupo in grupos) {
+      for (var arquivo in grupo.arquivos) {
+        int duplicados = grupo.arquivos.where((arq) => arq.filename == arquivo.filename).length;
+        if (duplicados > 1 || arquivo.filename == ordem + '.txt'){
+          arquivo.filename = duplicados.toString() + '_' + arquivo.filename;
+        }
+      }
+    }
+    for (var grupo in grupos) {
+      message += '\n# Lote ${grupos.indexOf(grupo) + 1} ${tipoGrupoStr[grupo.tipoGrupo]}\n' + grupo.toMessage();
+      for (var arquivo in grupo.arquivos) {
+        message += '\nNome arquivo: ${arquivo.filename}';
+        List<int> content = await File(arquivo.path).readAsBytes();
+        archive.addFile(
+          ArchiveFile(arquivo.filename, content.length, content)
+        );
+      }
+      message += '\n';
+    }
+    List<int> content = Utf8Codec().encode(message.replaceAll('\n', '\r\n'));
+    archive.addFile(
+      ArchiveFile(ordem + '.txt', content.length, content)
+    );
+
+    File tempZipFile = File((await Directory.systemTemp.createTemp()).path + '/teste.zip');
+    await tempZipFile.writeAsBytes(
+      ZipEncoder().encode(archive)
+    );
+
+    TelegramPatch telegram = TelegramPatch(dotEnv.env['telegramToken']);
+    TeleDart(telegram, Event());
+    await telegram.sendDocument(int.tryParse(dotEnv.env['telegramGroupId']), tempZipFile, caption: caption, fileName: ordem + '.zip');
+
+    isEnviando = false;
+    status = PedidoStatus.enviado;
+    isEnviado = true;
     this.notifyListeners();
   }
 }
@@ -68,13 +138,14 @@ class GrupoImpressao extends Model {
     }
     _tipoGrupo = tp;
   }
-  get config {
+  BaseConfig get config {
     switch (_tipoGrupo) {
       case TipoGrupo.documento:
         return configDoc;
       case TipoGrupo.foto:
         return configFoto;
     }
+    return configDoc;
   }
 
   @override
@@ -116,6 +187,13 @@ class GrupoImpressao extends Model {
           ..tipoPapelFoto = tipoPapelFoto;
     }
     this.notifyListeners();
+  }
+
+  String toMessage() {
+    return 'Cópias: $copias'
+      '\nArquivos: ${arquivos.length}'
+      '\nConfiguração: ${config.toMessage()}'
+      ;
   }
 }
 
@@ -195,7 +273,11 @@ Map<Colorido, String> coloridoStr = {
   Colorido.pretoBranco: 'Preto e Branco',
 };
 
-class ConfigDoc {
+abstract class BaseConfig {
+  String toMessage();
+}
+
+class ConfigDoc extends BaseConfig {
   TamanhoDoc tamanhoDoc = TamanhoDoc.a4;
   // frente, frente_verso,
   Duplex duplex = Duplex.somenteFrente;
@@ -206,6 +288,11 @@ class ConfigDoc {
   String toString() {
     return "tamanho: $tamanhoDoc, duplex: $duplex, colorido: $colorido";
   }
+
+  @override
+  String toMessage() {
+    return '\nTamanho: ${tamanhoDocStr[tamanhoDoc]}\nDuplex: ${duplexStr[duplex]}\nColorido: ${coloridoStr[colorido]}';
+  }
 }
 
 enum TipoPapelFoto { brilho, fosco, }
@@ -214,12 +301,16 @@ Map<TipoPapelFoto, String> tipoPapelFotoStr = {
   TipoPapelFoto.fosco: 'Fosco Premium',
 };
 
-class ConfigFoto {
+class ConfigFoto extends BaseConfig{
   TamanhoFoto tamanhoFoto = TamanhoFoto.mm203x305;
   TipoPapelFoto tipoPapelFoto = TipoPapelFoto.brilho;
 
   @override
   String toString() {
     return "tamanhoFoto: $tamanhoFoto, tipoPapelFoto: $tipoPapelFoto";
+  }
+  @override
+  String toMessage() {
+    return '\nTamanho: ${tamanhoFotoStr[tamanhoFoto]}\nTipo Papel: ${tipoPapelFotoStr[tipoPapelFoto]}';
   }
 }

@@ -47,23 +47,47 @@ class IdentificationCard extends StatelessWidget {
         children: <Widget>[
           ListTile(
             title: Card(
-              child: Column(
+              child: isEmpty ?
+                Center(
+                  child: Text('Nothign to see'),
+                )
+                : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  (
-                    isEmpty ?
-                    Center(
-                      child: Text('Nothign to see'),
-                    )
-                    : ListTile(
-                      leading: Icon(
-                        Icons.person,
-                        size: 50,
-                      ),
-                      title: Text(pedido.nome),
-                      isThreeLine: true,
-                      subtitle: Text(pedido.toSubTitle()),
-                    )
+                  ListTile(
+                    leading: Icon(
+                      Icons.person,
+                      size: 50,
+                    ),
+                    title: Text(pedido.nome),
+                    isThreeLine: true,
+                    subtitle: Text(pedido.toSubTitle()),
+                  ),
+                  ButtonTheme.bar(
+                    child: pedido.isEnviado ?
+                    ButtonBar(children: <Widget>[Icon(Icons.done_all),Text('Pedido Enviado'),],)
+                    :
+                    ButtonBar(
+                      alignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        FlatButton.icon(
+                          icon: Icon(Icons.edit),
+                          label: Text('Editar'),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        FlatButton.icon(
+                          icon: Icon(
+                            pedido.isEnviando ? Icons.update: Icons.playlist_add_check,
+                          ),
+                          label: Text('Finalizar Pedido'),
+                          textColor: Colors.amber.shade500,
+                          onPressed: () async {
+                            if (pedido.isEnviando || pedido.isEnviado) return;
+                            await pedido.enviar();
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

@@ -23,6 +23,8 @@ dependencies:
   scoped_model: ^1.0.1
   file_picker: ^1.1.1
   teledart: ^0.0.24
+  archive: ^2.0.8
+  dotenv: ^1.0.0
 
 dev_dependencies:
   flutter_test:
