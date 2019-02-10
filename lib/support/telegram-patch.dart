@@ -35,7 +35,7 @@ class TelegramPatch extends Telegram {
       bool disable_notification,
       int reply_to_message_id,
       ReplyMarkup reply_markup}) async {
-    String requestUrl = '${_baseUrl}${_token}/sendDocument';
+    String requestUrl = '$_baseUrl$_token/sendDocument';
     Map<String, dynamic> body = {
       'chat_id': chatId,
       'caption': caption ?? '',

@@ -5,23 +5,6 @@ import 'package:tme_file_shr/main.dart';
 import 'package:tme_file_shr/models.dart';
 
 class IdentificationCard extends StatelessWidget {
-  _navigateAndDisplaySelection(BuildContext context) async {
-    var result = await Navigator.pushNamed(context, '/group');
-    GrupoImpressao grupo;
-    if (result is! GrupoImpressao) {
-      return;
-    } else {
-      grupo = result;
-    }
-    try {
-      Scaffold.of(context)
-        ..removeCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: Text(grupo.arquivos.length.toString() + (grupo.tipoGrupo == TipoGrupo.documento ? ' documentos' : ' fotos') + ' adicionados'),
-        ));
-    } catch (e) {
-    }
-  }
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<Pedido>(
@@ -39,8 +22,24 @@ class IdentificationCard extends StatelessWidget {
         title: Text(MyApp.title),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateAndDisplaySelection(context),
-        tooltip: 'Increment',
+        onPressed: () async {
+          var result = await Navigator.pushNamed(context, '/group');
+          GrupoImpressao grupo;
+          if (result is! GrupoImpressao) {
+            return;
+          } else {
+            grupo = result;
+          }
+          try {
+            Scaffold.of(context)
+              ..removeCurrentSnackBar()
+              ..showSnackBar(SnackBar(
+                content: Text(grupo.arquivos.length.toString() + (grupo.tipoGrupo == TipoGrupo.documento ? ' documentos' : ' fotos') + ' adicionados'),
+              ));
+          } catch (e) {
+          }
+        },
+        tooltip: 'Adicionar Arquivos',
         child: Icon(Icons.add),
       ),
       body: ListView(
@@ -49,7 +48,7 @@ class IdentificationCard extends StatelessWidget {
             title: Card(
               child: isEmpty ?
                 Center(
-                  child: Text('Nothign to see'),
+                  child: Text('Nenum Pedido'),
                 )
                 : Column(
                 mainAxisSize: MainAxisSize.min,
@@ -61,11 +60,17 @@ class IdentificationCard extends StatelessWidget {
                     ),
                     title: Text(pedido.nome),
                     isThreeLine: true,
-                    subtitle: Text(pedido.toSubTitle()),
+                    subtitle: Text(pedido.toSubTitle() + '\n' + pedido.statusString),
                   ),
                   ButtonTheme.bar(
-                    child: pedido.isEnviado ?
-                    ButtonBar(children: <Widget>[Icon(Icons.done_all),Text('Pedido Enviado'),],)
+                    child: pedido.isEnviando || pedido.isEnviado ?
+                    ButtonBar(
+                      alignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(Icons.done_all),
+                        Text(pedido.statusString == null ? '' : pedido.statusString),
+                      ],
+                    )
                     :
                     ButtonBar(
                       alignment: MainAxisAlignment.end,

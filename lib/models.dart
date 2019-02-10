@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
-import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:teledart/teledart.dart';
-import 'package:teledart/telegram.dart';
-import 'package:crypto/crypto.dart';
-import 'package:dotenv/dotenv.dart' as dotEnv;
 
 import 'package:tme_file_shr/support/telegram-patch.dart';
 
@@ -28,6 +25,7 @@ class Pedido extends Model {
   Loja lojaRetirada;
   DateTime dataRetirada;
   List<GrupoImpressao> grupos = [];
+  String statusString = '';
 
   static Pedido of(BuildContext context) => ScopedModel.of<Pedido>(context);
 
@@ -56,11 +54,23 @@ class Pedido extends Model {
   bool isEnviando = false;
   bool isEnviado = false;
   enviar() async {
+    try {
+      await this.enviarActual();
+    } catch (e) {
+      print(e);
+      status = PedidoStatus.preenchido;
+      isEnviado = false;
+      statusString = 'Falha ao enviar';
+    } finally {
+      isEnviando = false;
+      this.notifyListeners();
+    }
+  }
+  enviarActual() async {
     isEnviando = true;
     this.notifyListeners();
-    await Future.delayed(Duration(seconds: 3));
 
-    String ordem = 'ordem_${this.nome}';
+    String ordem = '${nome.replaceAll(' ', '-')}_${telefone}_${DateFormat('yyyy-MM-dd_HH-mm', 'ptBR').format(dataRetirada)}';
     String message = '# Informações gerais\n'
       '\nCliente: $nome'
       '\nTelefone: $telefone'
@@ -72,6 +82,8 @@ class Pedido extends Model {
 
     Archive archive = Archive();
 
+    statusString = 'Verificando arquivos';
+    this.notifyListeners();
     for (var grupo in grupos) {
       for (var arquivo in grupo.arquivos) {
         int duplicados = grupo.arquivos.where((arq) => arq.filename == arquivo.filename).length;
@@ -91,6 +103,8 @@ class Pedido extends Model {
       }
       message += '\n';
     }
+    statusString = 'Comprimindo arquivos';
+    this.notifyListeners();
     List<int> content = Utf8Codec().encode(message.replaceAll('\n', '\r\n'));
     archive.addFile(
       ArchiveFile(ordem + '.txt', content.length, content)
@@ -101,13 +115,34 @@ class Pedido extends Model {
       ZipEncoder().encode(archive)
     );
 
-    TelegramPatch telegram = TelegramPatch(dotEnv.env['telegramToken']);
-    TeleDart(telegram, Event());
-    await telegram.sendDocument(int.tryParse(dotEnv.env['telegramGroupId']), tempZipFile, caption: caption, fileName: ordem + '.zip');
+    statusString = 'Enviando arquivos para telegram';
+    this.notifyListeners();
+    String telegramToken = String.fromEnvironment('telegramToken', defaultValue: null);
+    int telegramGroupId = int.fromEnvironment('telegramGroupId', defaultValue: null);
+    
+    if (telegramToken == null || telegramGroupId == null) {
+      String rawDotEnv = await rootBundle.loadString('.env');
+      Map<String, String> dotEnv = {};
+      for (var line in rawDotEnv.trim().replaceAll('\r', '').split('\n')) {
+        List<String> kv = line.split('=');
+        dotEnv[kv[0]] = kv[1];
+      }
+      telegramToken = dotEnv['telegramToken'];
+      telegramGroupId = int.tryParse(dotEnv['telegramGroupId']);
+    }
 
-    isEnviando = false;
+    assert(telegramToken != null, 'Sem telegram token');
+    assert(telegramGroupId != null, 'Sem telegram group id');
+    if (telegramToken == null) throw 'Sem telegram token';
+    if (telegramGroupId == null) throw 'Sem telegram group id';
+
+    TelegramPatch telegram = TelegramPatch(telegramToken);
+    TeleDart(telegram, Event());
+    await telegram.sendDocument(telegramGroupId, tempZipFile, caption: caption, fileName: ordem + '.zip');
     status = PedidoStatus.enviado;
     isEnviado = true;
+    statusString = 'Ordem enviada';
+    isEnviando = false;
     this.notifyListeners();
   }
 }
