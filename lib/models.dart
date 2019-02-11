@@ -110,10 +110,25 @@ class Pedido extends Model {
       ArchiveFile(ordem + '.txt', content.length, content)
     );
 
-    File tempZipFile = File((await Directory.systemTemp.createTemp()).path + '/teste.zip');
+    Directory tempDir = await Directory.systemTemp.createTemp();
+    File tempZipFile = File(tempDir.path + '/$ordem.zip');
     await tempZipFile.writeAsBytes(
       ZipEncoder().encode(archive)
     );
+
+    // limit to 50MB
+    FileStat zipStas = await tempZipFile.stat();
+    if (zipStas.size >= (50 * pow(2, 20))) {
+      status = PedidoStatus.preenchido;
+      isEnviado = false;
+      statusString = 'Falha ao enviar, tamanho do pedido excede 50MB\n'
+      'Remova alguns arquivos e tente novamente.';
+      isEnviando = false;
+      this.notifyListeners();
+      await tempZipFile.delete();
+      await tempDir.delete();
+      return;
+    }
 
     statusString = 'Enviando arquivos para telegram';
     this.notifyListeners();
@@ -138,12 +153,14 @@ class Pedido extends Model {
 
     TelegramPatch telegram = TelegramPatch(telegramToken);
     TeleDart(telegram, Event());
-    await telegram.sendDocument(telegramGroupId, tempZipFile, caption: caption, fileName: ordem + '.zip');
+    await telegram.sendDocument(telegramGroupId, tempZipFile, caption: caption, fileName: '$ordem.zip');
     status = PedidoStatus.enviado;
     isEnviado = true;
     statusString = 'Ordem enviada';
     isEnviando = false;
     this.notifyListeners();
+    await tempZipFile.delete();
+    await tempDir.delete();
   }
 }
 
