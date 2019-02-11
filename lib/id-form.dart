@@ -143,7 +143,7 @@ class _IdentificationFormState extends State<IdentificationForm> {
                     Navigator.pushNamed(context, '/pedido');
                   }
                 },
-                child: Text('Evniar'),
+                child: Text('Enviar'),
               ),
             ),
           ],
