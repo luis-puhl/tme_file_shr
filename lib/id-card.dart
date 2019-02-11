@@ -4,7 +4,14 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:tme_file_shr/main.dart';
 import 'package:tme_file_shr/models.dart';
 
-class IdentificationCard extends StatelessWidget {
+class IdentificationCard extends StatefulWidget {
+  @override
+  IdentificationCardState createState() {
+    return new IdentificationCardState();
+  }
+}
+
+class IdentificationCardState extends State<IdentificationCard> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<Pedido>(
@@ -107,23 +114,36 @@ class IdentificationCard extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  ListTile(
-                    leading: Icon(
-                      (grupo.tipoGrupo == TipoGrupo.documento ? Icons.file_upload : Icons.photo_album),
-                      size: 50,
-                    ),
-                    title: Text(grupo.arquivos.length.toString() + (grupo.tipoGrupo == TipoGrupo.documento ? ' documentos' : ' fotos')),
-                    isThreeLine: true,
-                    subtitle: Text(grupo.toSubTitleString()),
-                    trailing: Padding(
-                      padding: EdgeInsets.only(top: 30),
-                      child: IconButton(
-                        color: Theme.of(context).colorScheme.primary,
-                        icon: Icon(Icons.edit),
-                        onPressed: () => Navigator.pushNamed(context, '/group/' + grupo.id.toString()),
+                  GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, '/group/' + grupo.id.toString()),
+                    child: ListTile(
+                      leading: Icon(
+                        (grupo.tipoGrupo == TipoGrupo.documento ? Icons.file_upload : Icons.photo_album),
+                        size: 50,
                       ),
+                      title: Text(grupo.arquivos.length.toString() + (grupo.tipoGrupo == TipoGrupo.documento ? ' documentos' : ' fotos')),
+                      isThreeLine: true,
+                      subtitle: Text(grupo.toSubTitleString()),
                     ),
-                  )
+                  ),
+                  ButtonTheme.bar(
+                    padding: EdgeInsets.all(0),
+                    child: ButtonBar(
+                      alignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        IconButton(
+                          color: Theme.of(context).colorScheme.primary,
+                          icon: Icon(Icons.delete),
+                          onPressed: () => setState(() => pedido.grupos.removeWhere((gr) => grupo.id == gr.id)),
+                        ),
+                        IconButton(
+                          color: Theme.of(context).colorScheme.primary,
+                          icon: Icon(Icons.edit),
+                          onPressed: () => Navigator.pushNamed(context, '/group/' + grupo.id.toString()),
+                        ),
+                      ],
+                    )
+                  ),
                 ],
               ),
             ),

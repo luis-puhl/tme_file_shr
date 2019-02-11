@@ -30,11 +30,8 @@ A list of links, for me to read (aka: my chrome has too many tabs).
 
 
 # Mudanças
-- falha na home botao editar
 - erro com documento vazio
 - se tiver 0 documentos nem adicona na listagem
-- opçao de excluir grupo de documentos
-- clique no card de documentos
 - somatorio tam arquivos para pessoa
 - feedbacks mais diretos
 - feedback do status do pedido
