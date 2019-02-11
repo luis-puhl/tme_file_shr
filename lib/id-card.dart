@@ -64,7 +64,7 @@ class IdentificationCard extends StatelessWidget {
                     subtitle: Text(pedido.toSubTitle() + '\n' + pedido.statusString),
                   ),
                   ButtonTheme.bar(
-                    child: pedido.isEnviando || pedido.isEnviado ?
+                    child: !Env.isDebuggin && (pedido.isEnviando || pedido.isEnviado) ?
                     ButtonBar(
                       alignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -88,7 +88,7 @@ class IdentificationCard extends StatelessWidget {
                           label: Text('Finalizar Pedido'),
                           textColor: Colors.amber.shade500,
                           onPressed: () async {
-                            if (pedido.isEnviando || pedido.isEnviado) return;
+                            if (!Env.isDebuggin && (pedido.isEnviando || pedido.isEnviado)) return;
                             await pedido.enviar();
                           },
                         ),

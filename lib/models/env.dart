@@ -6,7 +6,13 @@ export './loja.dart';
 class Env {
   static String telegramToken = String.fromEnvironment('telegramToken', defaultValue: null);
   static Map<Loja, LojaInfo> lojaStr;
+  static bool isDebuggin = false;
+
   static Future init() async {
+    assert((){
+      isDebuggin = true;
+      return true;
+    }());
     // print('init env');
     String rawDotEnv = await rootBundle.loadString('.env');
     Map<String, String> dotEnv = {};
