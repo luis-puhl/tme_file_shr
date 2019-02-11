@@ -21,6 +21,7 @@ class IdentificationCard extends StatelessWidget {
       appBar: AppBar(
         title: Text(MyApp.title),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var result = await Navigator.pushNamed(context, '/group');

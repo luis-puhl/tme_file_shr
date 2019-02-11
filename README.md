@@ -27,3 +27,23 @@ A list of links, for me to read (aka: my chrome has too many tabs).
 - (8/10) https://github.com/ericwindmill/flutter_by_example_apps
 - (8/10) https://codingwithjoe.com/building-forms-with-flutter/ and https://github.com/jebright/flutter_form_app/tree/master/lib
 - (?/10) https://www.youtube.com/channel/UCrTnsT4OYZ53l0QGKqLeD5Q/videos
+
+
+# Mudanças
+- falha na home botao editar
+- evniar = enviar
+- erro com documento vazio
+- se tiver 0 documentos nem adicona na listagem
+- opçao de excluir grupo de documentos
+- clique no card de documentos
+- somatorio tam arquivos para pessoa
+- feedbacks mais diretos
+- feedback do status do pedido
+- acrescentar botao de info na top bar (sbre a loja + instruções do app)
+- no primeiro acesso aparecer a info
+-loja em infos gerais
+
+
+# Falta
+- nome do app: CelulaExpress
+- logo da loja??

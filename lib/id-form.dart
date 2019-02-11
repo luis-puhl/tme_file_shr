@@ -84,22 +84,33 @@ class _IdentificationFormState extends State<IdentificationForm> {
             ),
             Divider(),
             ListTile(
-              title: DropdownButtonFormField<Loja>(
-                decoration: InputDecoration(
-                  icon: Icon(Icons.business),
-                  labelText: 'Loja',
-                  hintText: 'Escolha uma loja para retirada',
+              title: FutureBuilder(
+                future: Env.init(),
+                builder: (context, snapshot) => DropdownButtonFormField<Loja>(
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.business),
+                    labelText: 'Loja',
+                    hintText: 'Escolha uma loja para retirada',
+                  ),
+                  value: _lojaRetirada,
+                  onSaved: (Loja newValue) => _lojaRetirada = newValue,
+                  onChanged: (Loja newValue) =>
+                      setState(() => _lojaRetirada = newValue),
+                  items: (
+                    Env.lojaStr != null ?
+                    Env.lojaStr.entries
+                    .map((MapEntry<Loja, LojaInfo> mapEntry) => DropdownMenuItem<Loja>(
+                      child: Text(mapEntry.value.nome),
+                      value: mapEntry.key,
+                    ))
+                    .toList()
+                    :
+                    [DropdownMenuItem<Loja>(
+                      child: Text('Loja'),
+                      value: Loja.loja1,
+                    )]
+                  ),
                 ),
-                value: _lojaRetirada,
-                onSaved: (Loja newValue) => _lojaRetirada = newValue,
-                onChanged: (Loja newValue) =>
-                    setState(() => _lojaRetirada = newValue),
-                items: lojaStr.entries
-                    .map((mapEntry) => DropdownMenuItem<Loja>(
-                          child: Text(mapEntry.value),
-                          value: mapEntry.key,
-                        ))
-                    .toList(),
               ),
             ),
             ListTile(
