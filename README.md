@@ -29,7 +29,7 @@ A list of links, for me to read (aka: my chrome has too many tabs).
 - (?/10) https://www.youtube.com/channel/UCrTnsT4OYZ53l0QGKqLeD5Q/videos
 
 
-# Mudanças
+# To do
 - erro com documento vazio
 - se tiver 0 documentos nem adicona na listagem
 - somatorio tam arquivos para pessoa
@@ -37,7 +37,7 @@ A list of links, for me to read (aka: my chrome has too many tabs).
 - feedback do status do pedido
 - acrescentar botao de info na top bar (sbre a loja + instruções do app)
 - no primeiro acesso aparecer a info
--loja em infos gerais
+- loja em infos gerais
 
 
 # Falta
