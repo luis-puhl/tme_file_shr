@@ -88,8 +88,14 @@ class IdentificationCardState extends State<IdentificationCard> {
                                 IconButton(
                                   color: Theme.of(context).colorScheme.primary,
                                   icon: Icon(Icons.edit),
-                                  onPressed: () => Navigator.pushNamed(
-                                      context, '/group/' + grupo.id.toString()),
+                                  onPressed: () async {
+                                    await Navigator.push<GrupoImpressao>(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PrintGroup(id: grupo.id)
+                                      )
+                                    );
+                                  },
                                 ),
                               ],
                             )),
@@ -186,13 +192,15 @@ class _IdCard extends StatelessWidget {
         );
       return;
     }
-    if (pedido.grupos.singleWhere((g) => g.arquivos.isEmpty).arquivos.isEmpty) {
-      scaffold
-        ..removeCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text('Configuração sem arquivos é inválida'))
-        );
-      return;
+    for (GrupoImpressao grupo in pedido.grupos) {
+      if (grupo.arquivos.isEmpty) {
+        scaffold
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text('Configuração sem arquivos é inválida'))
+          );
+        return;
+      }
     }
     await pedido.enviar();
   }
