@@ -61,7 +61,7 @@ class _PickFileState extends State<PickFile> {
       }
       print("File path: " + filePath);
       setState(() {
-        widget.grupo.arquivos.add(Arquivo(path: filePath));
+        widget.grupo.arquivos.add(Arquivo(filePath, File(filePath).statSync().size));
       });
     } on PlatformException catch (e) {
       print("PlatformException while picking the file: " + e.toString());

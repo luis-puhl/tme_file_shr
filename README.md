@@ -33,7 +33,6 @@ A list of links, for me to read (aka: my chrome has too many tabs).
 Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html) and [appicon.co](https://appicon.co/) for the icon sizing tool.
 
 # To do
-- somatorio tam arquivos para pessoa
 - feedbacks mais diretos
 - feedback do status do pedido
 - acrescentar botao de info na top bar (sbre a loja + instruções do app)

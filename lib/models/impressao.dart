@@ -16,6 +16,8 @@ class GrupoImpressao extends Model {
   List<Arquivo> arquivos = [];
 
   TipoGrupo get tipoGrupo => _tipoGrupo;
+
+  get size => arquivos.fold<int>(0, (acc, arq) => acc + arq.size);
   set tipoGrupo(TipoGrupo tp) {
     if (tp != _tipoGrupo) {
       switch (tp) {
@@ -93,10 +95,12 @@ class GrupoImpressao extends Model {
 
 class Arquivo extends Model {
   String path, filename;
+  int size;
 
-  Arquivo({
+  Arquivo(
     this.path,
-  }) {
+    this.size,
+  ) {
     filename = path.split('/').last;
   }
 }

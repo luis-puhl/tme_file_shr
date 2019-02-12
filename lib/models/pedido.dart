@@ -29,7 +29,9 @@ class Pedido extends Model {
   String toSubTitle() {
     return (telefone != null ? telefone : 'null') + '\n' +
       (lojaRetirada != null ? Env.lojaStr[lojaRetirada].nome : '') + '\n' +
-      (dataRetirada != null ? DateFormat('dd\/MM\/yyyy', 'ptBR').format(dataRetirada) : '');
+      (dataRetirada != null ? DateFormat('dd\/MM\/yyyy', 'ptBR').format(dataRetirada) : '') + '\n' +
+      (grupos.fold<int>(0, (int acc, GrupoImpressao grupo) => grupo.size + acc) / pow(2, 20)).toStringAsFixed(2) + ' MB'
+      ;
   }
 
   String toString() {
