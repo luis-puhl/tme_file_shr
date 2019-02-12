@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:tme_file_shr/models.dart';
-import 'package:tme_file_shr/main.dart';
 import 'package:tme_file_shr/support/form-radio.dart';
 import 'package:tme_file_shr/support/pick-file.dart';
 
@@ -16,7 +15,7 @@ class PrintGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(MyApp.title),
+        title: Text('Adicionar Pedido'),
       ),
       body: PrintGroupForm(id: id),
     );

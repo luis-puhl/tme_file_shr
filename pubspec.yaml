@@ -24,6 +24,7 @@ dependencies:
   file_picker: ^1.1.1
   teledart: ^0.0.24
   archive: ^2.0.8
+  url_launcher: ^5.0.1
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +45,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
    - .env
+   - assets/
   #  - assets/res/mipmap-hdpi/ic_launcher.png
   #  - assets/res/mipmap-mdpi/ic_launcher.png
   #  - assets/res/mipmap-xhdpi/ic_launcher.png

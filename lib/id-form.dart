@@ -37,6 +37,12 @@ class _IdentificationFormState extends State<IdentificationForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text(MyApp.title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.info),
+            onPressed: () => Navigator.pushNamed(context, '/info'),
+          ),
+        ],
       ),
       body: Form(
         key: _formKey,

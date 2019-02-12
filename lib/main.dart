@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -6,16 +7,18 @@ import 'package:tme_file_shr/models.dart';
 import 'package:tme_file_shr/id-form.dart';
 import 'package:tme_file_shr/id-card.dart';
 import 'package:tme_file_shr/add-group.dart';
+import 'package:tme_file_shr/info.dart';
 
 void main() {
   // You could optionally connect [model] with some database here.
   final model = Pedido();
-
-  runApp(
-    ScopedModel<Pedido>(
-      model: model,
-      child: MyApp(),
-    ),
+  Timer(Duration(seconds: 2), () =>
+    runApp(
+      ScopedModel<Pedido>(
+        model: model,
+        child: MyApp(),
+      ),
+    )
   );
 }
 
@@ -39,6 +42,7 @@ class MyApp extends StatelessWidget {
         '/id': (context) => IdentificationForm(),
         '/pedido': (context) => IdentificationCard(),
         '/group': (context) => PrintGroup(),
+        '/info': (context) => Info(),
       },
       onGenerateRoute: (RouteSettings settings) {
         List<String> path = settings.name.split('/');

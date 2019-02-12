@@ -35,6 +35,4 @@ Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-la
 # To do
 - feedbacks mais diretos
 - feedback do status do pedido
-- acrescentar botao de info na top bar (sbre a loja + instruções do app)
 - no primeiro acesso aparecer a info
-- loja em infos gerais
