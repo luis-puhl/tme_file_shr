@@ -20,7 +20,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  static final title = 'Causando Impressão';
+  static final title = 'Foto Celula Express';
 
   @override
   Widget build(BuildContext context) {

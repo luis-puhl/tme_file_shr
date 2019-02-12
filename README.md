@@ -28,6 +28,9 @@ A list of links, for me to read (aka: my chrome has too many tabs).
 - (8/10) https://codingwithjoe.com/building-forms-with-flutter/ and https://github.com/jebright/flutter_form_app/tree/master/lib
 - (?/10) https://www.youtube.com/channel/UCrTnsT4OYZ53l0QGKqLeD5Q/videos
 
+# Acknowledgments
+
+Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html) and [appicon.co](https://appicon.co/) for the icon sizing tool.
 
 # To do
 - erro com documento vazio
@@ -38,8 +41,3 @@ A list of links, for me to read (aka: my chrome has too many tabs).
 - acrescentar botao de info na top bar (sbre a loja + instruções do app)
 - no primeiro acesso aparecer a info
 - loja em infos gerais
-
-
-# Falta
-- nome do app: CelulaExpress
-- logo da loja??
