@@ -19,7 +19,58 @@ class PickFile extends StatefulWidget {
 class _PickFileState extends State<PickFile> {
   bool isDoc;
 
-  buildGridTile(BuildContext context, Arquivo arq) {
+  @override
+  Widget build(BuildContext context) {
+    isDoc = widget.grupo.tipoGrupo == TipoGrupo.documento;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Selecionar ' + (isDoc ? ' documentos' : ' fotos')),
+      ),
+      floatingActionButton: _FabPicker(widget.grupo),
+      body: GridView.count(
+        primary: false,
+        padding: const EdgeInsets.all(16.0),
+        crossAxisSpacing: 16.0,
+        mainAxisSpacing: 16.0,
+        crossAxisCount: 2,
+        children: _buildGrid(),
+      ),
+    );
+  }
+
+  List<Widget> _buildGrid() {
+    List<Widget> grid = [];
+    grid.addAll(widget.grupo.arquivos
+        .map<Widget>((Arquivo arq) => _buildGridTile(context, arq)));
+    grid.add(
+      RaisedButton.icon(
+        icon: Icon(Icons.attach_file),
+        label: Text('Adicionar\n' + (isDoc ? ' documentos' : ' fotos')),
+        onPressed: _addFile,
+      ),
+    );
+    return grid;
+  }
+
+  _addFile() async {
+    try {
+      String filePath = '';
+      filePath = await FilePicker.getFilePath(type: FileType.ANY);
+      if (filePath == '') {
+        return;
+      }
+      print("File path: " + filePath);
+      setState(() {
+        widget.grupo.arquivos.add(Arquivo(path: filePath));
+      });
+    } on PlatformException catch (e) {
+      print("PlatformException while picking the file: " + e.toString());
+    } catch (e) {
+      print("Error while picking the file: " + e.toString());
+    }
+  }
+
+  _buildGridTile(BuildContext context, Arquivo arq) {
     return GridTile(
       footer: GridTileBar(
         title: Text(
@@ -31,10 +82,7 @@ class _PickFileState extends State<PickFile> {
         trailing: IconButton(
           icon: Icon(Icons.delete),
           color: Colors.white,
-          onPressed: () => setState(() {
-                widget.grupo.arquivos
-                    .removeWhere((arqivo) => arqivo.path == arq.path);
-              }),
+          onPressed: () => setState(() => widget.grupo.arquivos.removeWhere((arqivo) => arqivo.path == arq.path)),
         ),
       ),
       child: Container(
@@ -59,54 +107,34 @@ class _PickFileState extends State<PickFile> {
       ),
     );
   }
+}
 
+class _FabPicker extends StatefulWidget {
+  final GrupoImpressao grupo;
+  _FabPicker(this.grupo);
+  @override
+  _FabPickerState createState() {
+    return new _FabPickerState();
+  }
+}
+
+class _FabPickerState extends State<_FabPicker> {
   @override
   Widget build(BuildContext context) {
-    isDoc = widget.grupo.tipoGrupo == TipoGrupo.documento;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Selecionar ' + (isDoc ? ' documentos' : ' fotos')),
-      ),
-      floatingActionButton: FloatingActionButton(
+    return FloatingActionButton(
         onPressed: () {
+          if (widget.grupo.arquivos.isEmpty) {
+            Scaffold.of(context)
+              ..removeCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(content: Text('Selecione ao menos um arquivo'))
+              );
+            return;
+          }
           Navigator.pop(context, widget.grupo);
         },
-        tooltip: 'Increment',
+        tooltip: 'Comfirmar Seleção',
         child: Icon(Icons.check),
-      ),
-      body: GridView.count(
-        primary: false,
-        padding: const EdgeInsets.all(16.0),
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing: 16.0,
-        crossAxisCount: 2,
-        children: (widget.grupo.arquivos
-                .map<Widget>((Arquivo arq) => buildGridTile(context, arq)))
-            .followedBy([
-          RaisedButton.icon(
-            icon: Icon(Icons.attach_file),
-            label: Text('Adicionar\n' + (isDoc ? ' documentos' : ' fotos')),
-            onPressed: () async {
-              try {
-                String filePath = '';
-                filePath = await FilePicker.getFilePath(type: FileType.ANY);
-                if (filePath == '') {
-                  return;
-                }
-                print("File path: " + filePath);
-                setState(() {
-                  widget.grupo.arquivos.add(Arquivo(path: filePath));
-                });
-              } on PlatformException catch (e) {
-                print("PlatformException while picking the file: " +
-                    e.toString());
-              } catch (e) {
-                print("Error while picking the file: " + e.toString());
-              }
-            },
-          ),
-        ]).toList(),
-      ),
-    );
+      );
   }
 }

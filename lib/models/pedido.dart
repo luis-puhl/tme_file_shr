@@ -48,6 +48,15 @@ class Pedido extends Model {
     this.notifyListeners();
   }
 
+  addGrupo(GrupoImpressao group) {
+    this.grupos.add(group);
+    // notifyListeners();
+  }
+  removeGrupo(GrupoImpressao group) {
+    this.grupos.removeWhere((g) => g.id == group.id);
+    notifyListeners();
+  }
+
   bool isEnviando = false;
   bool isEnviado = false;
   enviar() async {

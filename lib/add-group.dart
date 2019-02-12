@@ -6,18 +6,35 @@ import 'package:tme_file_shr/main.dart';
 import 'package:tme_file_shr/support/form-radio.dart';
 import 'package:tme_file_shr/support/pick-file.dart';
 
-class PrintGroup extends StatefulWidget {
+class PrintGroup extends StatelessWidget {
   final int id;
   PrintGroup({
     Key key,
     this.id,
   }) : super(key: key);
-
   @override
-  _PrintGroupState createState() => _PrintGroupState(id: this.id);
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(MyApp.title),
+      ),
+      body: PrintGroupForm(id: id),
+    );
+  }
 }
 
-class _PrintGroupState extends State<PrintGroup> {
+class PrintGroupForm extends StatefulWidget {
+  final int id;
+  PrintGroupForm({
+    Key key,
+    @required this.id,
+  }) : super(key: key);
+
+  @override
+  _PrintGroupFormState createState() => _PrintGroupFormState(id: this.id);
+}
+
+class _PrintGroupFormState extends State<PrintGroupForm> {
   final _formKey = GlobalKey<FormState>();
 
   TamanhoDoc _tamanhoDoc;
@@ -28,7 +45,7 @@ class _PrintGroupState extends State<PrintGroup> {
   TipoGrupo _tipoGrupo;
   int _copias;
   int id;
-  _PrintGroupState({
+  _PrintGroupFormState({
     Key key,
     this.id,
   });
@@ -148,6 +165,77 @@ class _PrintGroupState extends State<PrintGroup> {
     super.initState();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Hero(
+        tag: 'print-group-card',
+        child: ListView(
+          children: <Widget>[
+            ListTile(
+              title: DropdownButtonFormField<TipoGrupo>(
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.assignment),
+                  labelText: 'Tipo de impressão',
+                ),
+                value: _tipoGrupo,
+                onSaved: (TipoGrupo newValue) => _tipoGrupo = newValue,
+                onChanged: (TipoGrupo newValue) =>
+                    setState(() => _tipoGrupo = newValue),
+                items: tipoGrupoStr.entries
+                    .map((mapEntry) => DropdownMenuItem<TipoGrupo>(
+                          child: Text(mapEntry.value),
+                          value: mapEntry.key,
+                        ))
+                    .toList(),
+              ),
+            ),
+            ListTile(
+              title: TextFormField(
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.filter_none),
+                  labelText: 'Cópias',
+                ),
+                initialValue: _copias.toString(),
+                keyboardType: TextInputType.number,
+                onSaved: (String newValue) => _copias = int.tryParse(newValue),
+                validator: (String value) {
+                  int intVal = int.tryParse(value);
+                  if (value.isEmpty || intVal == null || intVal <= 0) {
+                    return 'Número de cópias é obrigatório';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            // ------------**------------------------*-*-*------------------
+            Divider(),
+          ]
+              .followedBy(
+                _tipoGrupo == TipoGrupo.documento
+                    ? docConfigs()
+                    : fotoConfigs(),
+              )
+              .toList()
+              .followedBy(
+            [
+              // ------------**------------------------*-*-*------------------
+              Divider(),
+              ListTile(
+                title: RaisedButton.icon(
+                  icon: Icon(Icons.check),
+                  label: Text('Salvar Configuração'),
+                  onPressed: _salvarConfig,
+                ),
+              ),
+            ],
+          ).toList(),
+        ),
+      ),
+    );
+  }
+
   _salvarConfig() async {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
@@ -165,83 +253,16 @@ class _PrintGroupState extends State<PrintGroup> {
         copias: _copias,
       );
       GrupoImpressao filesGroup = await Navigator.push<GrupoImpressao>(context, MaterialPageRoute(builder: (context) => PickFile(grupo: group,)),);
-      Navigator.pop(context, filesGroup);
+      if (filesGroup == null || filesGroup.arquivos.isEmpty) {
+        print('[AddGroup] Selecione ao menos um arquivo');
+        Scaffold.of(context)
+          ..removeCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text('Selecione ao menos um arquivo'))
+          );
+        return;
+      }
+      Navigator.pop<GrupoImpressao>(context, filesGroup);
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(MyApp.title),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Hero(
-          tag: 'print-group-card',
-          child: ListView(
-            children: <Widget>[
-              ListTile(
-                title: DropdownButtonFormField<TipoGrupo>(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.assignment),
-                    labelText: 'Tipo de impressão',
-                  ),
-                  value: _tipoGrupo,
-                  onSaved: (TipoGrupo newValue) => _tipoGrupo = newValue,
-                  onChanged: (TipoGrupo newValue) =>
-                      setState(() => _tipoGrupo = newValue),
-                  items: tipoGrupoStr.entries
-                      .map((mapEntry) => DropdownMenuItem<TipoGrupo>(
-                            child: Text(mapEntry.value),
-                            value: mapEntry.key,
-                          ))
-                      .toList(),
-                ),
-              ),
-              ListTile(
-                title: TextFormField(
-                  decoration: const InputDecoration(
-                    icon: Icon(Icons.filter_none),
-                    labelText: 'Cópias',
-                  ),
-                  initialValue: _copias.toString(),
-                  keyboardType: TextInputType.number,
-                  onSaved: (String newValue) => _copias = int.tryParse(newValue),
-                  validator: (String value) {
-                    int intVal = int.tryParse(value);
-                    if (value.isEmpty || intVal == null || intVal <= 0) {
-                      return 'Número de cópias é obrigatório';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              // ------------**------------------------*-*-*------------------
-              Divider(),
-            ]
-                .followedBy(
-                  _tipoGrupo == TipoGrupo.documento
-                      ? docConfigs()
-                      : fotoConfigs(),
-                )
-                .toList()
-                .followedBy(
-              [
-                // ------------**------------------------*-*-*------------------
-                Divider(),
-                ListTile(
-                  title: RaisedButton.icon(
-                    icon: Icon(Icons.check),
-                    label: Text('Salvar Configuração'),
-                    onPressed: _salvarConfig,
-                  ),
-                ),
-              ],
-            ).toList(),
-          ),
-        ),
-      ),
-    );
   }
 }

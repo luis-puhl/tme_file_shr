@@ -13,7 +13,6 @@ class Env {
       isDebuggin = true;
       return true;
     }());
-    // print('init env');
     String rawDotEnv = await rootBundle.loadString('.env');
     Map<String, String> dotEnv = {};
     for (var line in rawDotEnv.trim().replaceAll('\r', '').split('\n')) {

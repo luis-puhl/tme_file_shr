@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
           case 'group':
             int id = int.tryParse(path[2]);
             if (id != null) {
-              return MaterialPageRoute(builder: (BuildContext _) => PrintGroup(id: id), settings: settings);
+              return MaterialPageRoute(builder: (BuildContext _) => PrintGroup(id: id), settings: settings) as Route<GrupoImpressao>;
             }
             break;
           default:
