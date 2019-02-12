@@ -33,8 +33,6 @@ A list of links, for me to read (aka: my chrome has too many tabs).
 Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html) and [appicon.co](https://appicon.co/) for the icon sizing tool.
 
 # To do
-- erro com documento vazio
-- se tiver 0 documentos nem adicona na listagem
 - somatorio tam arquivos para pessoa
 - feedbacks mais diretos
 - feedback do status do pedido
