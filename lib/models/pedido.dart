@@ -141,7 +141,7 @@ class Pedido extends Model {
 
     List<int> tempZipFile = ZipEncoder().encode(archive);
 
-    statusString = 'Enviando arquivos para telegram';
+    statusString = 'Enviando arquivos';
     this.notifyListeners();
 
     if (Env.telegramToken == null) throw 'Sem telegram token';
