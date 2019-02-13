@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -12,13 +11,12 @@ import 'package:tme_file_shr/info.dart';
 void main() {
   // You could optionally connect [model] with some database here.
   final model = Pedido();
-  Timer(Duration(seconds: 2), () =>
-    runApp(
-      ScopedModel<Pedido>(
-        model: model,
-        child: MyApp(),
-      ),
-    )
+
+  runApp(
+    ScopedModel<Pedido>(
+      model: model,
+      child: MyApp(),
+    ),
   );
 }
 
@@ -50,7 +48,10 @@ class MyApp extends StatelessWidget {
           case 'group':
             int id = int.tryParse(path[2]);
             if (id != null) {
-              return MaterialPageRoute(builder: (BuildContext _) => PrintGroup(id: id), settings: settings) as Route<GrupoImpressao>;
+              return MaterialPageRoute(
+                builder: (BuildContext _) => PrintGroup(id: id),
+                settings: settings
+              );
             }
             break;
           default:

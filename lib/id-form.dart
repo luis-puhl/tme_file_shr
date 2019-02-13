@@ -38,29 +38,34 @@ class _IdentificationFormState extends State<IdentificationForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text(MyApp.title),
-        actions: <Widget>[
-          FutureBuilder<int>(
-            initialData: 0,
-            future: Env.getCounter(),
-            builder: (BuildContext context, AsyncSnapshot<int> snap) {
-              if (snap.data == 1 && !isAlreadyInit) {
-                isAlreadyInit = true;
-                Future.microtask(() => Navigator.pushNamed(context, '/info'),);
-              }
-              return IconButton(
-                icon: Icon(Icons.info),
-                onPressed: () => Navigator.pushNamed(context, '/info'),
-              );
-            }
-          ),
-        ],
+        actions: _buildActions(),
       ),
       body: Form(
         key: _formKey,
-        child: ListView(
-          children: <Widget>[
+        child: _buildFormChildren(),
+      ),
+    );
+  }
+
+  List<Widget> _buildActions() {
+    return <Widget>[
+      IconButton(
+        icon: Icon(Icons.info),
+        onPressed: () => Navigator.pushNamed(context, '/info'),
+      )
+    ];
+  }
+
+  Widget _buildFormChildren() {
+    return FutureBuilder<Map<String, String>>(
+      initialData: {},
+      future: Env.getUserInfo(),
+      builder: (BuildContext context, AsyncSnapshot<Map<String, String>> snap) {
+        return ListView(
+          children:<Widget>[
             ListTile(
               title: TextFormField(
+                initialValue: snap.data['username'],
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   icon: Icon(Icons.person),
@@ -79,13 +84,13 @@ class _IdentificationFormState extends State<IdentificationForm> {
             ),
             ListTile(
               title: TextFormField(
+                initialValue: snap.data['phone'],
                 keyboardType: TextInputType.phone,
                 validator: (String value) {
                   if (value.isEmpty) {
                     return 'Telefone é obrigatório';
                   }
-                  if (!phoneExp.hasMatch(value))
-                    return 'Número de telefone Inválido';
+                  if (!phoneExp.hasMatch(value)) return 'Número de telefone Inválido';
                   return null;
                 },
                 decoration: const InputDecoration(
@@ -104,30 +109,30 @@ class _IdentificationFormState extends State<IdentificationForm> {
               title: FutureBuilder(
                 future: Env.init(),
                 builder: (context, snapshot) => DropdownButtonFormField<Loja>(
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.business),
-                    labelText: 'Loja',
-                    hintText: 'Escolha uma loja para retirada',
-                  ),
-                  value: _lojaRetirada,
-                  onSaved: (Loja newValue) => _lojaRetirada = newValue,
-                  onChanged: (Loja newValue) =>
-                      setState(() => _lojaRetirada = newValue),
-                  items: (
-                    Env.lojaStr != null ?
-                    Env.lojaStr.entries
-                    .map((MapEntry<Loja, LojaInfo> mapEntry) => DropdownMenuItem<Loja>(
-                      child: Text(mapEntry.value.nome),
-                      value: mapEntry.key,
-                    ))
-                    .toList()
-                    :
-                    [DropdownMenuItem<Loja>(
-                      child: Text('Loja'),
-                      value: Loja.loja1,
-                    )]
-                  ),
-                ),
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.business),
+                        labelText: 'Loja',
+                        hintText: 'Escolha uma loja para retirada',
+                      ),
+                      value: _lojaRetirada,
+                      onSaved: (Loja newValue) => _lojaRetirada = newValue,
+                      onChanged: (Loja newValue) =>
+                          setState(() => _lojaRetirada = newValue),
+                      items: (Env.lojaStr != null
+                          ? Env.lojaStr.entries
+                              .map((MapEntry<Loja, LojaInfo> mapEntry) =>
+                                  DropdownMenuItem<Loja>(
+                                    child: Text(mapEntry.value.nome),
+                                    value: mapEntry.key,
+                                  ))
+                              .toList()
+                          : [
+                              DropdownMenuItem<Loja>(
+                                child: Text('Loja'),
+                                value: Loja.loja1,
+                              )
+                            ]),
+                    ),
               ),
             ),
             ListTile(
@@ -149,23 +154,26 @@ class _IdentificationFormState extends State<IdentificationForm> {
             Divider(),
             ListTile(
               title: RaisedButton(
-                onPressed: () {
-                  _formKey.currentState.save();
-                  if (_formKey.currentState.validate()) {
-                    Pedido pedido = Pedido.of(context);
-                    // Scaffold.of(context)
-                    //     .showSnackBar(SnackBar(content: Text('Enviado...')));
-                    pedido.setIdentification(_nome, '+55 ' + _telefone,
-                        _lojaRetirada, _dataRetirada);
-                    Navigator.pushNamed(context, '/pedido');
-                  }
-                },
+                onPressed: _enviar,
                 child: Text('Enviar'),
               ),
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
+  }
+
+  _enviar() {
+    _formKey.currentState.save();
+    if (_formKey.currentState.validate()) {
+      Pedido pedido = Pedido.of(context);
+      // Scaffold.of(context)
+      //   ..removeCurrentSnackBar()
+      //   ..showSnackBar(SnackBar(content: Text('Enviado...')));
+      Env.setUserInfo(_nome, _telefone);
+      pedido.setIdentification(_nome, '+55 ' + _telefone, _lojaRetirada, _dataRetirada);
+      Navigator.pushNamed(context, '/pedido');
+    }
   }
 }

@@ -8,6 +8,7 @@ class Env {
   static String telegramToken = String.fromEnvironment('telegramToken', defaultValue: null);
   static Map<Loja, LojaInfo> lojaStr;
   static bool isDebuggin = false;
+  static String _username, _phone;
 
   static Future<int> getCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -20,6 +21,29 @@ class Env {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('counter', 0);
     return 0;
+  }
+  
+  static Future<Map<String, String>> getUserInfo() async {
+    if (_username == null && _phone == null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _username = prefs.getString('username');
+      _phone = prefs.getString('phone');
+      if (_username == null && _phone == null) {
+        return {};
+      }
+    }
+    return {
+      'username': _username,
+      'phone': _phone,
+    };
+  }
+
+  static Future setUserInfo(String username, String phone) async {
+    _username = username;
+    _phone = phone;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', username);
+    await prefs.setString('phone', phone);
   }
 
   static Future init() async {
