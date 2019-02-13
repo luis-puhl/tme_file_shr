@@ -10,7 +10,7 @@ class GrupoImpressao extends Model {
   final int id = getId();
   TipoGrupo _tipoGrupo = TipoGrupo.foto;
   int copias = 1;
-  ConfigDoc configDoc;
+  ConfigDoc configDoc = ConfigDoc();
   ConfigFoto configFoto = ConfigFoto();
 
   List<Arquivo> arquivos = [];

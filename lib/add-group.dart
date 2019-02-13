@@ -44,6 +44,8 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
   TipoGrupo _tipoGrupo;
   int _copias;
   int id;
+  GrupoImpressao group;
+
   _PrintGroupFormState({
     Key key,
     this.id,
@@ -77,7 +79,7 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
             labelText: 'Lados de impressao',
             hintText: 'Escolha um tipo de papel',
           ),
-          initialValue: Duplex.somenteFrente,
+          initialValue: _duplex,
           key1: const Text('Frente'),
           value1: Duplex.somenteFrente,
           key2: const Text('Frente e Verso'),
@@ -92,8 +94,7 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
             labelText: 'Cores',
             hintText: 'Escolha as tintas',
           ),
-          initialValue: Colorido.pretoBranco,
-          // icon: const Icon(Icons.color_lens),
+          initialValue: _colorido,
           key1: const Text('Preto e Branco'),
           value1: Colorido.pretoBranco,
           key2: const Text('Colorido'),
@@ -133,7 +134,7 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
             labelText: 'Tipo de Papel',
             hintText: 'Escolha um tipo de papel',
           ),
-          initialValue: TipoPapelFoto.brilho,
+          initialValue: _tipoPapelFoto,
           key1: Text('Brilhante\nTradicional'),
           value1: TipoPapelFoto.brilho,
           key2: Text('Fosco'),
@@ -146,21 +147,25 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
 
   @override
   void initState() {
-    var grupos = Pedido.of(context).grupos;
-    GrupoImpressao group =
-        grupos.firstWhere((grupo) => grupo.id == this.id, orElse: () {
-      var group = GrupoImpressao();
-      id = group.id;
-      grupos.add(group);
-      return group;
-    });
-    _tamanhoDoc = group.configDoc?.tamanhoDoc;
-    _duplex = group.configDoc?.duplex;
-    _colorido = group.configDoc?.colorido;
-    _tamanhoFoto = group.configFoto?.tamanhoFoto ?? TamanhoFoto.mm152x102;
-    _tipoPapelFoto = group.configFoto?.tipoPapelFoto ?? TipoPapelFoto.brilho;
-    _tipoGrupo = group.tipoGrupo;
-    _copias = group.copias;
+    print('_PrintGroupFormState.initState()');
+    List<GrupoImpressao> grupos = Pedido.of(context).grupos;
+    this.group = grupos.firstWhere(
+      (grupo) => grupo.id == this.id,
+      orElse: () {
+        GrupoImpressao group = GrupoImpressao();
+        id = group.id;
+        grupos.add(group);
+        return group;
+      }
+    );
+    print(this.group);
+    this._tamanhoDoc = group.configDoc?.tamanhoDoc ?? TamanhoDoc.a4;
+    this._duplex = group.configDoc?.duplex ?? Duplex.somenteFrente;
+    this._colorido = group.configDoc?.colorido ?? Colorido.pretoBranco;
+    this._tamanhoFoto = group.configFoto?.tamanhoFoto ?? TamanhoFoto.mm152x102;
+    this._tipoPapelFoto = group.configFoto?.tipoPapelFoto ?? TipoPapelFoto.brilho;
+    this._tipoGrupo = group.tipoGrupo ?? TipoGrupo.foto;
+    this._copias = group.copias ?? 1;
     super.initState();
   }
 
@@ -239,10 +244,7 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       formState.save();
-      GrupoImpressao group = Pedido.of(context)
-          ?.grupos
-          ?.firstWhere((grupo) => grupo.id == this.id);
-      group.setConfig(
+      this.group.setConfig(
         tamanhoDoc: _tamanhoDoc,
         duplex: _duplex,
         colorido: _colorido,
@@ -251,8 +253,11 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
         tipoGrupo: _tipoGrupo,
         copias: _copias,
       );
-      GrupoImpressao filesGroup = await Navigator.push<GrupoImpressao>(context, MaterialPageRoute(builder: (context) => PickFile(grupo: group,)),);
-      if (filesGroup == null || filesGroup.arquivos.isEmpty) {
+      this.group = await Navigator.push<GrupoImpressao>(
+        context,
+        MaterialPageRoute(builder: (context) => PickFile(grupo: this.group,)),
+      );
+      if (this.group == null || this.group.arquivos.isEmpty) {
         print('[AddGroup] Selecione ao menos um arquivo');
         Scaffold.of(context)
           ..removeCurrentSnackBar()
@@ -261,7 +266,7 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
           );
         return;
       }
-      Navigator.pop<GrupoImpressao>(context, filesGroup);
+      Navigator.pop<GrupoImpressao>(context, this.group);
     }
   }
 }
