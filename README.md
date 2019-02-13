@@ -35,6 +35,8 @@ Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-la
 # To do
 - feedbacks mais diretos
 - fontes menores no titulo LOJAS (Sobre)
-- **---**
-- Send order broken on prod.: FileSystemException Creation of temp dir failed.
-
+- Fotos como padrão (primeiro)
+- Tamanho 15x10 padrão
+- Mecanismo para fazer outro pedido
+- Botão de finalizar pedido deixar em lugar mais claro
+- Se der implementar multipla seleção
