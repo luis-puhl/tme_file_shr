@@ -15,6 +15,7 @@ class _IdentificationFormState extends State<IdentificationForm> {
   String _telefone;
   Loja _lojaRetirada = Loja.loja1;
   DateTime _dataRetirada = nextValidDate(DateTime.now().add(Duration(days: 3)));
+  bool isAlreadyInit = false;
 
   final _formKey = GlobalKey<FormState>();
   static final DateTime minDataRetirada =
@@ -38,9 +39,19 @@ class _IdentificationFormState extends State<IdentificationForm> {
       appBar: AppBar(
         title: Text(MyApp.title),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.info),
-            onPressed: () => Navigator.pushNamed(context, '/info'),
+          FutureBuilder<int>(
+            initialData: 0,
+            future: Env.getCounter(),
+            builder: (BuildContext context, AsyncSnapshot<int> snap) {
+              if (snap.data == 1 && !isAlreadyInit) {
+                isAlreadyInit = true;
+                Future.microtask(() => Navigator.pushNamed(context, '/info'),);
+              }
+              return IconButton(
+                icon: Icon(Icons.info),
+                onPressed: () => Navigator.pushNamed(context, '/info'),
+              );
+            }
           ),
         ],
       ),

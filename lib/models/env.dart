@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './loja.dart';
 export './loja.dart';
@@ -8,9 +9,23 @@ class Env {
   static Map<Loja, LojaInfo> lojaStr;
   static bool isDebuggin = false;
 
+  static Future<int> getCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int counter = (prefs.getInt('counter') ?? 0) + 1;
+    await prefs.setInt('counter', counter);
+    return counter;
+  }
+
+  static Future<int> resetCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('counter', 0);
+    return 0;
+  }
+
   static Future init() async {
     assert((){
       isDebuggin = true;
+      resetCounter();
       return true;
     }());
     String rawDotEnv = await rootBundle.loadString('.env');

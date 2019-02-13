@@ -35,4 +35,3 @@ Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-la
 # To do
 - feedbacks mais diretos
 - feedback do status do pedido
-- no primeiro acesso aparecer a info
