@@ -11,17 +11,9 @@ class IdentificationForm extends StatefulWidget {
 }
 
 class _IdentificationFormState extends State<IdentificationForm> {
-  String _nome;
-  String _telefone;
-  Loja _lojaRetirada = Loja.loja1;
-  DateTime _dataRetirada = nextValidDate(DateTime.now().add(Duration(days: 3)));
-  bool isAlreadyInit = false;
-
-  final _formKey = GlobalKey<FormState>();
   static final DateTime minDataRetirada =
       nextValidDate(DateTime.now().add(Duration(days: 3)));
-  final RegExp phoneExp = RegExp(r'[\d\-\ ]+');
-
+  
   static bool isValidDate(DateTime date) {
     return date.weekday != DateTime.sunday && date.weekday != DateTime.saturday;
   }
@@ -32,6 +24,15 @@ class _IdentificationFormState extends State<IdentificationForm> {
     }
     return date;
   }
+  
+  String _nome;
+  String _telefone;
+  Loja _lojaRetirada = Loja.loja1;
+  DateTime _dataRetirada = nextValidDate(DateTime.now().add(Duration(days: 3)));
+  bool isAlreadyInit = false;
+
+  final _formKey = GlobalKey<FormState>();
+  final RegExp phoneExp = RegExp(r'[\d\-\ ]+');
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +50,20 @@ class _IdentificationFormState extends State<IdentificationForm> {
 
   List<Widget> _buildActions() {
     return <Widget>[
-      IconButton(
-        icon: Icon(Icons.info),
-        onPressed: () => Navigator.pushNamed(context, '/info'),
-      )
+      FutureBuilder<int>(
+        initialData: 0,
+        future: Env.getCounter(),
+        builder: (BuildContext context, AsyncSnapshot<int> snap) {
+          if (snap.data == 1 && !this.isAlreadyInit) {
+            this.isAlreadyInit = true;
+            Future.microtask(() => Navigator.pushNamed(context, '/info'),);
+          }
+          return IconButton(
+            icon: const Icon(Icons.info),
+            onPressed: () => Navigator.pushNamed(context, '/info'),
+          );
+        },
+      ),
     ];
   }
 
