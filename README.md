@@ -34,5 +34,4 @@ Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-la
 
 # To do
 - feedbacks mais diretos
-- Mecanismo para fazer outro pedido
 - Se der implementar multipla seleção

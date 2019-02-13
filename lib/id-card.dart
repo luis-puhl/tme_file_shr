@@ -138,45 +138,84 @@ class _IdCard extends StatelessWidget {
                       Text(pedido.toSubTitle() + '\n' + pedido.statusString),
                 ),
                 ButtonTheme.bar(
-                  child:
-                      !Env.isDebuggin && (pedido.isEnviando || pedido.isEnviado)
-                          ? ButtonBar(
-                              alignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Icon(Icons.done_all),
-                                Text(pedido.statusString == null
-                                    ? ''
-                                    : pedido.statusString),
-                              ],
-                            )
-                          : ButtonBar(
-                              alignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                FlatButton.icon(
-                                  textColor: Theme.of(context).buttonTheme.colorScheme.primary,
-                                  icon: Icon(Icons.edit),
-                                  label: Text('Editar'),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                                RaisedButton.icon(
-                                  color: Theme.of(context).buttonTheme.colorScheme.primary,
-                                  textColor: Theme.of(context).buttonTheme.colorScheme.onPrimary,
-                                  // textColor: Colors.amber.shade500,
-                                  icon: Icon(
-                                    pedido.isEnviando
-                                        ? Icons.update
-                                        : Icons.playlist_add_check,
-                                  ),
-                                  label: Text('Finalizar Pedido'),
-                                  onPressed: () => _enviar(context),
-                                ),
-                              ],
-                            ),
+                  child: _buildButtonsIdCard(context),
                 ),
               ],
             ),
     );
   }
+
+  _buildButtonsIdCard(BuildContext context) {
+    Widget doneBar = Column(
+      children: <Widget>[
+        ListTile(
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisSize: MainAxisSize.max,
+          // children: <Widget>[
+          leading: Padding(
+            padding: EdgeInsets.all(16),
+            child: Icon(Icons.done_all),
+          ),
+          title: Text(pedido.statusString ?? ''),
+          dense: true,
+          // ],
+        ),
+        pedido.isEnviado
+          ? ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RaisedButton.icon(
+                  label: Text('Novo pedido'),
+                  color: Theme.of(context).colorScheme.primary,
+                  textColor: Theme.of(context).colorScheme.onPrimary,
+                  icon: Icon(Icons.play_circle_outline),
+                  onPressed: () {
+                    startApp();
+                    Navigator.pop(context);
+                  },
+                )
+            ],
+          )
+          : Container(),
+      ],
+    );
+    Widget editingBar = ButtonBar(
+      alignment: MainAxisAlignment.end,
+      children: <Widget>[
+        FlatButton.icon(
+          textColor: Theme.of(context).buttonTheme.colorScheme.primary,
+          icon: Icon(Icons.edit),
+          label: Text('Editar'),
+          onPressed: () => Navigator.pop(context),
+        ),
+        RaisedButton.icon(
+          color: Theme.of(context).buttonTheme.colorScheme.primary,
+          textColor: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+          icon: Icon(
+            pedido.isEnviando
+                ? Icons.update
+                : Icons.playlist_add_check,
+          ),
+          label: Text('Finalizar Pedido'),
+          onPressed: () => _enviar(context),
+        ),
+      ],
+    );
+    
+    if (Env.isDebuggin) {
+      return Column(
+        children: <Widget>[
+          doneBar,
+          editingBar,
+        ],
+      );
+    } else if (pedido.isEnviando || pedido.isEnviado) {
+      return doneBar;
+    }
+    return editingBar;
+  }
+
   _enviar(BuildContext context) async {
     ScaffoldState scaffold = Scaffold.of(context);
     if (pedido.isEnviando || pedido.isEnviado) {

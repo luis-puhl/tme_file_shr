@@ -57,110 +57,101 @@ class _IdentificationFormState extends State<IdentificationForm> {
   }
 
   Widget _buildFormChildren() {
-    return FutureBuilder<Map<String, String>>(
-      initialData: {},
-      future: Env.getUserInfo(),
-      builder: (BuildContext context, AsyncSnapshot<Map<String, String>> snap) {
-        return ListView(
-          children:<Widget>[
-            ListTile(
-              title: TextFormField(
-                initialValue: snap.data['username'],
-                textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.person),
-                  labelText: 'Nome',
-                ),
-                onSaved: (String value) => setState(() {
-                      _nome = value;
-                    }),
-                validator: (String value) {
-                  if (value.isEmpty || value.trim().length < 4) {
-                    return 'Nome é obrigatório';
-                  }
-                  return null;
-                },
-              ),
+    return ListView(
+      children:<Widget>[
+        ListTile(
+          title: TextFormField(
+            initialValue: Pedido.of(context).nome,
+            textCapitalization: TextCapitalization.words,
+            decoration: const InputDecoration(
+              icon: Icon(Icons.person),
+              labelText: 'Nome',
             ),
-            ListTile(
-              title: TextFormField(
-                initialValue: snap.data['phone'],
-                keyboardType: TextInputType.phone,
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return 'Telefone é obrigatório';
-                  }
-                  if (!phoneExp.hasMatch(value)) return 'Número de telefone Inválido';
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  icon: Icon(Icons.phone),
-                  labelText: 'Telefone',
-                  hintText: '11 9 1324-1234',
-                  prefixText: '+55 ',
-                ),
-                onSaved: (String value) => setState(() {
-                      _telefone = value;
-                    }),
-              ),
+            onSaved: (String value) => setState(() {
+                  _nome = value;
+                }),
+            validator: (String value) {
+              if (value.isEmpty || value.trim().length < 4) {
+                return 'Nome é obrigatório';
+              }
+              return null;
+            },
+          ),
+        ),
+        ListTile(
+          title: TextFormField(
+            initialValue: Pedido.of(context).telefone,
+            keyboardType: TextInputType.phone,
+            validator: (String value) {
+              if (value.isEmpty) {
+                return 'Telefone é obrigatório';
+              }
+              if (!phoneExp.hasMatch(value)) return 'Número de telefone Inválido';
+              return null;
+            },
+            decoration: const InputDecoration(
+              icon: Icon(Icons.phone),
+              labelText: 'Telefone',
+              hintText: '11 9 1324-1234',
+              prefixText: '+55 ',
             ),
-            Divider(),
-            ListTile(
-              title: FutureBuilder(
-                future: Env.init(),
-                builder: (context, snapshot) => DropdownButtonFormField<Loja>(
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.business),
-                        labelText: 'Loja',
-                        hintText: 'Escolha uma loja para retirada',
-                      ),
-                      value: _lojaRetirada,
-                      onSaved: (Loja newValue) => _lojaRetirada = newValue,
-                      onChanged: (Loja newValue) =>
-                          setState(() => _lojaRetirada = newValue),
-                      items: (Env.lojaStr != null
-                          ? Env.lojaStr.entries
-                              .map((MapEntry<Loja, LojaInfo> mapEntry) =>
-                                  DropdownMenuItem<Loja>(
-                                    child: Text(mapEntry.value.nome),
-                                    value: mapEntry.key,
-                                  ))
-                              .toList()
-                          : [
-                              DropdownMenuItem<Loja>(
-                                child: Text('Loja'),
-                                value: Loja.loja1,
-                              )
-                            ]),
-                    ),
-              ),
+            onSaved: (String value) => setState(() {
+                  _telefone = value;
+                }),
+          ),
+        ),
+        Divider(),
+        ListTile(
+          title: DropdownButtonFormField<Loja>(
+            decoration: InputDecoration(
+              icon: Icon(Icons.business),
+              labelText: 'Loja',
+              hintText: 'Escolha uma loja para retirada',
             ),
-            ListTile(
-              title: DateTimePicker(
-                onlyDate: true,
-                icon: Icon(Icons.calendar_today),
-                labelText: 'Data Retirada',
-                selectedDate: _dataRetirada,
-                selectedTime: TimeOfDay.now(),
-                selectDate: (DateTime date) => setState(() {
-                      _dataRetirada = date;
-                    }),
-                selectTime: (TimeOfDay time) {},
-                selectableDayPredicate: (DateTime date) =>
-                    isValidDate(date) &&
-                    date.isAfter(DateTime.now().add(Duration(days: 3))),
-              ),
-            ),
-            Divider(),
-            ListTile(
-              title: RaisedButton(
-                onPressed: _enviar,
-                child: Text('Enviar'),
-              ),
-            ),
-          ],
-        );
-      },
+            value: _lojaRetirada,
+            onSaved: (Loja newValue) => _lojaRetirada = newValue,
+            onChanged: (Loja newValue) =>
+                setState(() => _lojaRetirada = newValue),
+            items: (Env.lojaStr != null
+                ? Env.lojaStr.entries
+                    .map((MapEntry<Loja, LojaInfo> mapEntry) =>
+                        DropdownMenuItem<Loja>(
+                          child: Text(mapEntry.value.nome),
+                          value: mapEntry.key,
+                        ))
+                    .toList()
+                : [
+                    DropdownMenuItem<Loja>(
+                      child: Text('Loja'),
+                      value: Loja.loja1,
+                    )
+                  ]),
+          ),
+        ),
+        ListTile(
+          title: DateTimePicker(
+            onlyDate: true,
+            icon: Icon(Icons.calendar_today),
+            labelText: 'Data Retirada',
+            selectedDate: _dataRetirada,
+            selectedTime: TimeOfDay.now(),
+            selectDate: (DateTime date) => setState(() {
+                  _dataRetirada = date;
+                }),
+            selectTime: (TimeOfDay time) {},
+            selectableDayPredicate: (DateTime date) =>
+                isValidDate(date) &&
+                date.isAfter(DateTime.now().add(Duration(days: 3))),
+          ),
+        ),
+        Divider(),
+        ListTile(
+          title: RaisedButton(
+            onPressed: _enviar,
+            child: Text('Enviar'),
+          ),
+        ),
+      ],
     );
   }
 
@@ -172,7 +163,7 @@ class _IdentificationFormState extends State<IdentificationForm> {
       //   ..removeCurrentSnackBar()
       //   ..showSnackBar(SnackBar(content: Text('Enviado...')));
       Env.setUserInfo(_nome, _telefone);
-      pedido.setIdentification(_nome, '+55 ' + _telefone, _lojaRetirada, _dataRetirada);
+      pedido.setIdentification(_nome, _telefone, _lojaRetirada, _dataRetirada);
       Navigator.pushNamed(context, '/pedido');
     }
   }

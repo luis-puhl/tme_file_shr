@@ -15,6 +15,8 @@ import './impressao.dart';
 enum PedidoStatus { vazio, identificado, preenchido, enviado }
 
 class Pedido extends Model {
+  static Pedido of(BuildContext context) => ScopedModel.of<Pedido>(context);
+
   PedidoStatus status = PedidoStatus.vazio;
   String nome, telefone;
   Loja lojaRetirada;
@@ -22,7 +24,7 @@ class Pedido extends Model {
   List<GrupoImpressao> grupos = [];
   String statusString = '';
 
-  static Pedido of(BuildContext context) => ScopedModel.of<Pedido>(context);
+  Pedido({this.nome, this.telefone});
 
   int get totalSize => grupos.fold<int>(0, (int acc, GrupoImpressao grupo) => grupo.size + acc);
 
@@ -177,20 +179,16 @@ class Pedido extends Model {
         document,
         filename: fileName
       )
-    )
-    ..send()
-    .then<http.Response>((http.StreamedResponse response) => http.Response.fromStream(response))
-    .then(
-      (http.Response response) {
-        Map<String, dynamic> responseBody = jsonDecode(response.body);
-        if (responseBody['ok'])
-          return responseBody['result'];
-        else
-          return Future.error(Exception(
-              '${responseBody['error_code']} ${responseBody['description']}'));
-      }
-    ).catchError(
-      (error) => Future.error(Exception('$error'))
     );
+    http.Response response = await http.Response.fromStream(
+      await request.send()
+    );
+    Map<String, dynamic> responseBody = jsonDecode(response.body);
+    if (responseBody['ok']) {
+      return responseBody['result'];
+    } else {
+      return Future.error(Exception(
+          '${responseBody['error_code']} ${responseBody['description']}'));
+    }
   }
 }

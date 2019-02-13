@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -8,16 +9,41 @@ import 'package:tme_file_shr/id-card.dart';
 import 'package:tme_file_shr/add-group.dart';
 import 'package:tme_file_shr/info.dart';
 
+StreamController<Pedido> pedidoStream = StreamController();
 void main() {
-  // You could optionally connect [model] with some database here.
-  final model = Pedido();
-
+  startApp();
   runApp(
-    ScopedModel<Pedido>(
-      model: model,
-      child: MyApp(),
+    StreamBuilder<Pedido>(
+      stream: pedidoStream.stream,
+      initialData: null,
+      builder: (context, snapshot) {
+        if (snapshot.data != null) {
+          return ScopedModel<Pedido>(
+            model: snapshot.data,
+            child: MyApp(),
+          );
+        }
+        return Container(
+          color: Colors.white,
+          child: Center(
+            child: CircularProgressIndicator()
+          ),
+        );
+      },
     ),
   );
+}
+
+startApp() async {
+  await Env.init();
+  Map<String, String> userInfo = await Env.getUserInfo();
+  pedidoStream.add(
+    Pedido(
+      nome: userInfo['username'],
+      telefone: userInfo['phone'],
+    )
+  );
+  // Env.isDebuggin = false;
 }
 
 class MyApp extends StatelessWidget {
