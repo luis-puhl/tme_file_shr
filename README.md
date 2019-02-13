@@ -35,3 +35,12 @@ Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-la
 # To do
 - feedbacks mais diretos
 - feedback do status do pedido
+- fontes menores no titulo LOJAS (Sobre)
+- erro no botao Iniciar um pedido (volta pra ele mesmo)
+- editar grupo de documentos nao está funcionando
+- **---**
+- dar noticicao de que o arquivo finalizou o envio
+- internet pode ser lenta mostrar estagio em que est zipando? enviando para a loja/telegram?
+- **---**
+- finalizar pedido nao esta funcionando
+- splash bugada
