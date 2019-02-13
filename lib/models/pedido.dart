@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 import 'dart:math';
 import 'dart:io';
 import 'dart:convert';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
-import 'package:teledart/teledart.dart';
-
-import 'package:tme_file_shr/support/telegram-patch.dart';
 
 import './env.dart';
 import './impressao.dart';
@@ -26,11 +24,13 @@ class Pedido extends Model {
 
   static Pedido of(BuildContext context) => ScopedModel.of<Pedido>(context);
 
+  int get totalSize => grupos.fold<int>(0, (int acc, GrupoImpressao grupo) => grupo.size + acc);
+
   String toSubTitle() {
     return (telefone != null ? telefone : 'null') + '\n' +
       (lojaRetirada != null ? Env.lojaStr[lojaRetirada].nome : '') + '\n' +
       (dataRetirada != null ? DateFormat('dd\/MM\/yyyy', 'ptBR').format(dataRetirada) : '') + '\n' +
-      (grupos.fold<int>(0, (int acc, GrupoImpressao grupo) => grupo.size + acc) / pow(2, 20)).toStringAsFixed(2) + ' MB'
+      (totalSize / pow(2, 20)).toStringAsFixed(2) + ' MB'
       ;
   }
 
@@ -101,6 +101,16 @@ class Pedido extends Model {
 
     statusString = 'Verificando arquivos';
     this.notifyListeners();
+    // limit to 50MB
+    if (this.totalSize >= (50 * pow(2, 20))) {
+      status = PedidoStatus.preenchido;
+      isEnviado = false;
+      statusString = 'Falha ao enviar, tamanho do pedido excede 50MB\n'
+      'Remova alguns arquivos e tente novamente.';
+      isEnviando = false;
+      this.notifyListeners();
+      return;
+    }
     for (var grupo in grupos) {
       for (var arquivo in grupo.arquivos) {
         int duplicados = grupo.arquivos.where((arq) => arq.filename == arquivo.filename).length;
@@ -124,28 +134,10 @@ class Pedido extends Model {
     this.notifyListeners();
     List<int> content = Utf8Codec().encode(message.replaceAll('\n', '\r\n'));
     archive.addFile(
-      ArchiveFile(ordem + '.txt', content.length, content)
+      ArchiveFile('$ordem.txt', content.length, content)
     );
 
-    Directory tempDir = await Directory.systemTemp.createTemp();
-    File tempZipFile = File(tempDir.path + '/$ordem.zip');
-    await tempZipFile.writeAsBytes(
-      ZipEncoder().encode(archive)
-    );
-
-    // limit to 50MB
-    FileStat zipStas = await tempZipFile.stat();
-    if (zipStas.size >= (50 * pow(2, 20))) {
-      status = PedidoStatus.preenchido;
-      isEnviado = false;
-      statusString = 'Falha ao enviar, tamanho do pedido excede 50MB\n'
-      'Remova alguns arquivos e tente novamente.';
-      isEnviando = false;
-      this.notifyListeners();
-      await tempZipFile.delete();
-      await tempDir.delete();
-      return;
-    }
+    List<int> tempZipFile = ZipEncoder().encode(archive);
 
     statusString = 'Enviando arquivos para telegram';
     this.notifyListeners();
@@ -153,15 +145,52 @@ class Pedido extends Model {
     if (Env.telegramToken == null) throw 'Sem telegram token';
     if (telegramGroupId == null) throw 'Sem telegram group id';
 
-    TelegramPatch telegram = TelegramPatch(Env.telegramToken);
-    TeleDart(telegram, Event());
-    await telegram.sendDocument(telegramGroupId, tempZipFile, caption: caption, fileName: '$ordem.zip');
+    await _telegramSendDocument(chatId: telegramGroupId, document: tempZipFile, caption: caption, fileName: '$ordem.zip');
     status = PedidoStatus.enviado;
     isEnviado = true;
-    statusString = 'Ordem enviada';
+    statusString = 'Pedido enviado';
     isEnviando = false;
     this.notifyListeners();
-    await tempZipFile.delete();
-    await tempDir.delete();
+  }
+
+  _telegramSendDocument({int chatId, String caption, List<int> document, String fileName}) async {
+    final String _baseUrl = 'https://api.telegram.org/bot';
+    final String _token = Env.telegramToken;
+
+    String requestUrl = '$_baseUrl$_token/sendDocument';
+    Map<String, dynamic> body = {
+      'chat_id': chatId,
+      'caption': caption ?? '',
+      'parse_mode': '',
+      'disable_notification': '',
+      'reply_to_message_id': '',
+      'reply_markup': '',
+    };
+
+    http.MultipartRequest request = http.MultipartRequest('POST', Uri.parse(requestUrl));
+    request
+    ..headers.addAll({'Content-Type': 'multipart/form-data'})
+    ..fields.addAll(body.map((k, v) => MapEntry(k, '$v')))
+    ..files.add(
+      http.MultipartFile.fromBytes(
+        'document',
+        document,
+        filename: fileName
+      )
+    )
+    ..send()
+    .then<http.Response>((http.StreamedResponse response) => http.Response.fromStream(response))
+    .then(
+      (http.Response response) {
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        if (responseBody['ok'])
+          return responseBody['result'];
+        else
+          return Future.error(Exception(
+              '${responseBody['error_code']} ${responseBody['description']}'));
+      }
+    ).catchError(
+      (error) => Future.error(Exception('$error'))
+    );
   }
 }

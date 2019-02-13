@@ -182,7 +182,9 @@ class _IdCard extends StatelessWidget {
         ..showSnackBar(
           SnackBar(content: Text('Pedido já enviado'))
         );
-      return;
+      if (!Env.isDebuggin) {
+        return;
+      }
     }
     if (pedido.grupos.isEmpty) {
       scaffold
@@ -190,7 +192,9 @@ class _IdCard extends StatelessWidget {
         ..showSnackBar(
           SnackBar(content: Text('Selecione ao menos uma configuração'))
         );
-      return;
+      if (!Env.isDebuggin) {
+        return;
+      }
     }
     for (GrupoImpressao grupo in pedido.grupos) {
       if (grupo.arquivos.isEmpty) {
@@ -199,7 +203,9 @@ class _IdCard extends StatelessWidget {
           ..showSnackBar(
             SnackBar(content: Text('Configuração sem arquivos é inválida'))
           );
-        return;
+        if (!Env.isDebuggin) {
+          return;
+        }
       }
     }
     await pedido.enviar();
