@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:tme_file_shr/support/transparent-image.dart';
 import 'package:tme_file_shr/main.dart';
 import 'package:tme_file_shr/models/env.dart';
 
@@ -10,9 +11,12 @@ class Info extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> list = [
       Container(
-        child: Image.asset('assets/icone-favicon.png'),
+        child: FadeInImage(
+          placeholder: MemoryImage(kTransparentImage),
+          image: AssetImage('assets/icone-favicon.png'),
+        ),
         padding: const EdgeInsets.symmetric(vertical: 16.0),
-        constraints: BoxConstraints(maxHeight: 200.0),
+        constraints: BoxConstraints(maxHeight: 200.0, minHeight: 200.0),
       ),
       ListTile(
         title: Text('Sobre o aplicativo'),
