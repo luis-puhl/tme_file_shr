@@ -35,7 +35,5 @@ Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-la
 # To do
 - feedbacks mais diretos
 - fontes menores no titulo LOJAS (Sobre)
-- Fotos como padrão (primeiro)
-- Tamanho 15x10 padrão
 - Mecanismo para fazer outro pedido
 - Se der implementar multipla seleção

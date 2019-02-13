@@ -8,10 +8,10 @@ int getId() {
 
 class GrupoImpressao extends Model {
   final int id = getId();
-  TipoGrupo _tipoGrupo = TipoGrupo.documento;
+  TipoGrupo _tipoGrupo = TipoGrupo.foto;
   int copias = 1;
-  ConfigDoc configDoc = ConfigDoc();
-  ConfigFoto configFoto;
+  ConfigDoc configDoc;
+  ConfigFoto configFoto = ConfigFoto();
 
   List<Arquivo> arquivos = [];
 
@@ -107,8 +107,8 @@ class Arquivo extends Model {
 
 enum TipoGrupo { documento, foto, }
 Map<TipoGrupo, String> tipoGrupoStr = {
-  TipoGrupo.documento: 'Documentos',
   TipoGrupo.foto: 'Fotos',
+  TipoGrupo.documento: 'Documentos',
 };
 enum TamanhoDoc { a3, a4, a5, a6, }
 Map<TamanhoDoc, String> tamanhoDocStr = {
@@ -135,7 +135,7 @@ enum TamanhoFoto {
   mm600x900,
 }
 Map<TamanhoFoto, String> tamanhoFotoStr = {
-  TamanhoFoto.mm152x102: '15,2 x 10,2 cm',
+  TamanhoFoto.mm152x102: '15,2 x 10,2 cm (padrão 4x6in 3:2)',
   TamanhoFoto.mm152x210: '15,2 x 21,0 cm',
   TamanhoFoto.mm129x89: '12,9 x 8,9 cm',
   TamanhoFoto.mm129x180: '12,9 x 18,0 cm',
@@ -192,7 +192,7 @@ Map<TipoPapelFoto, String> tipoPapelFotoStr = {
 };
 
 class ConfigFoto extends BaseConfig{
-  TamanhoFoto tamanhoFoto = TamanhoFoto.mm203x305;
+  TamanhoFoto tamanhoFoto = TamanhoFoto.mm152x102;
   TipoPapelFoto tipoPapelFoto = TipoPapelFoto.brilho;
 
   @override

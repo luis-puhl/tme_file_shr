@@ -157,7 +157,7 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
     _tamanhoDoc = group.configDoc?.tamanhoDoc;
     _duplex = group.configDoc?.duplex;
     _colorido = group.configDoc?.colorido;
-    _tamanhoFoto = group.configFoto?.tamanhoFoto ?? TamanhoFoto.mm203x254;
+    _tamanhoFoto = group.configFoto?.tamanhoFoto ?? TamanhoFoto.mm152x102;
     _tipoPapelFoto = group.configFoto?.tipoPapelFoto ?? TipoPapelFoto.brilho;
     _tipoGrupo = group.tipoGrupo;
     _copias = group.copias;
