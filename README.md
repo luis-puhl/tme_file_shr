@@ -1,8 +1,16 @@
 # tme_file_shr
 
-Telegram File Share: an app to share files to a telegram bot.
+Telegram File Share: app to share files via a telegram bot.
 
-## Getting Started
+<img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/assets/logo_cor.png" height="200px">
+
+# Screenshots
+
+<img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/screenshots/flutter_01.png" height="300px"> <img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/screenshots/flutter_02.png" height="300px"> <img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/screenshots/flutter_03.png" height="300px"> <img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/screenshots/flutter_04.png" height="300px"> <img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/screenshots/flutter_05.png" height="300px">
+
+<img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/screenshots/flutter_06.png" height="300px"> <img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/screenshots/flutter_07.png" height="300px"> <img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/screenshots/flutter_08.png" height="300px"> <img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/screenshots/flutter_09.png" height="300px"> <img src="https://raw.githubusercontent.com/luis-puhl/tme_file_shr/master/screenshots/flutter_10.png" height="300px"> 
+
+## Getting Started with Flutter
 
 This project is a starting point for a Flutter application.
 
