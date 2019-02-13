@@ -153,18 +153,21 @@ class _IdCard extends StatelessWidget {
                               alignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 FlatButton.icon(
+                                  textColor: Theme.of(context).buttonTheme.colorScheme.primary,
                                   icon: Icon(Icons.edit),
                                   label: Text('Editar'),
                                   onPressed: () => Navigator.pop(context),
                                 ),
-                                FlatButton.icon(
+                                RaisedButton.icon(
+                                  color: Theme.of(context).buttonTheme.colorScheme.primary,
+                                  textColor: Theme.of(context).buttonTheme.colorScheme.onPrimary,
+                                  // textColor: Colors.amber.shade500,
                                   icon: Icon(
                                     pedido.isEnviando
                                         ? Icons.update
                                         : Icons.playlist_add_check,
                                   ),
                                   label: Text('Finalizar Pedido'),
-                                  textColor: Colors.amber.shade500,
                                   onPressed: () => _enviar(context),
                                 ),
                               ],

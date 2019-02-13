@@ -38,5 +38,4 @@ Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-la
 - Fotos como padrão (primeiro)
 - Tamanho 15x10 padrão
 - Mecanismo para fazer outro pedido
-- Botão de finalizar pedido deixar em lugar mais claro
 - Se der implementar multipla seleção
