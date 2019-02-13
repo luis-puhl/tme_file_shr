@@ -34,6 +34,5 @@ Thanks to [@romannurik](https://romannurik.github.io/AndroidAssetStudio/icons-la
 
 # To do
 - feedbacks mais diretos
-- fontes menores no titulo LOJAS (Sobre)
 - Mecanismo para fazer outro pedido
 - Se der implementar multipla seleção

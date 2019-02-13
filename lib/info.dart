@@ -60,8 +60,7 @@ class Info extends StatelessWidget {
         )
       ),
       Divider(),
-      Center(child: Text('Lojas', style: Theme.of(context).textTheme.display2,),),
-      Divider()
+      Center(child: Text('Lojas', style: Theme.of(context).textTheme.display1,),),
     ];
     for (LojaInfo loja in Env.lojaStr.values) {
       list.addAll([
