@@ -32,7 +32,8 @@ class Arquivo {
 
   Future<Uint8List> getThumb() async {
     if (this.asset?.thumbData == null) {
-      await this.asset?.requestThumbnail(asset.originalWidth ~/100, asset.originalHeight ~/100, quality: 10);
+      // await this.asset?.requestThumbnail(asset.originalWidth ~/100, asset.originalHeight ~/100, quality: 10);
+      await this.asset?.requestThumbnail(asset.originalWidth, asset.originalHeight);
     }
     if ( this.asset.thumbData != null) {
       return this.asset.thumbData.buffer.asUint8List();
