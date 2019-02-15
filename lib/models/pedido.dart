@@ -1,9 +1,9 @@
+import 'dart:math';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'dart:math';
-import 'dart:convert';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
@@ -17,6 +17,7 @@ enum PedidoStatus { vazio, identificado, preenchido, enviado }
 class Pedido extends Model {
   static Pedido of(BuildContext context) => ScopedModel.of<Pedido>(context);
 
+  int _id = Random.secure().nextInt(1<<32);
   PedidoStatus status = PedidoStatus.vazio;
   String nome, telefone;
   Loja lojaRetirada;
@@ -77,12 +78,8 @@ class Pedido extends Model {
       status = PedidoStatus.preenchido;
       isEnviado = false;
       statusString = 'Falha ao enviar\n' + error.toString();
-      switch (error?.cause) {
-        case "HttpClientException: 400 Bad Request: chat not found":
-          statusString = 'Falha ao enviar\nChat $chatId não encontrado';
-          break;
-        default:
-          statusString = error.toString();
+      if (error?.cause != null && error?.cause == 'HttpClientException: 400 Bad Request: chat not found') {
+        statusString = 'Falha ao enviar\nChat $chatId não encontrado';
       }
       print(error);
     } finally {
@@ -94,7 +91,7 @@ class Pedido extends Model {
     isEnviando = true;
     this.notifyListeners();
 
-    String ordem = '${nome.replaceAll(' ', '-')}_${telefone}_${DateFormat('yyyy-MM-dd_HH-mm', 'ptBR').format(dataRetirada)}';
+    String ordem = '${nome.replaceAll(' ', '-')}_${telefone}_${DateFormat('yyyy-MM-dd_HH-mm', 'ptBR').format(dataRetirada)}_$_id';
     String message = '# Informações gerais\n'
       '\nCliente: $nome'
       '\nTelefone: $telefone'
@@ -132,7 +129,7 @@ class Pedido extends Model {
         message += '\nNome arquivo: ${arquivo.filename}';
         List<int> content = await arquivo.readAsBytes();
         archive.addFile(
-          ArchiveFile(arquivo.filename, content.length, content)
+          ArchiveFile('$ordem/${arquivo.filename}', content.length, content)
         );
         arquivo.release();
       }
@@ -142,7 +139,7 @@ class Pedido extends Model {
     this.notifyListeners();
     List<int> content = Utf8Codec().encode(message.replaceAll('\n', '\r\n'));
     archive.addFile(
-      ArchiveFile('$ordem.txt', content.length, content)
+      ArchiveFile('$ordem/pedido.txt', content.length, content)
     );
 
     List<int> tempZipFile = ZipEncoder().encode(archive);
