@@ -134,8 +134,11 @@ class _IdCard extends StatelessWidget {
                   ),
                   title: Text(pedido.nome),
                   isThreeLine: true,
-                  subtitle:
-                      Text(pedido.toSubTitle() + '\n' + pedido.statusString),
+                  subtitle: FutureBuilder<String>(
+                    initialData: '',
+                    future: pedido.toSubTitle(),
+                    builder: (context, snap) => Text(snap.data + '\n' + pedido.statusString),
+                  ),
                 ),
                 ButtonTheme.bar(
                   child: _buildButtonsIdCard(context),

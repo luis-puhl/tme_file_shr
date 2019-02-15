@@ -3,7 +3,6 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
-import 'dart:io';
 import 'dart:convert';
 
 import 'package:archive/archive.dart';
@@ -11,6 +10,7 @@ import 'package:archive/archive_io.dart';
 
 import './env.dart';
 import './impressao.dart';
+import './arquivo.dart';
 
 enum PedidoStatus { vazio, identificado, preenchido, enviado }
 
@@ -26,13 +26,19 @@ class Pedido extends Model {
 
   Pedido({this.nome, this.telefone});
 
-  int get totalSize => grupos.fold<int>(0, (int acc, GrupoImpressao grupo) => grupo.size + acc);
+  Future<int> getSize() async {
+    int size = 0;
+    for (GrupoImpressao grupo in grupos) {
+      size += (await grupo.getSize()) ?? 0;
+    }
+    return size;
+  }
 
-  String toSubTitle() {
+  Future<String> toSubTitle() async {
     return (telefone != null ? telefone : 'null') + '\n' +
       (lojaRetirada != null ? Env.lojaStr[lojaRetirada].nome : '') + '\n' +
       (dataRetirada != null ? DateFormat('dd\/MM\/yyyy', 'ptBR').format(dataRetirada) : '') + '\n' +
-      (totalSize / pow(2, 20)).toStringAsFixed(2) + ' MB'
+      ((await this.getSize()) / pow(2, 20)).toStringAsFixed(2) + ' MB'
       ;
   }
 
@@ -67,19 +73,18 @@ class Pedido extends Model {
     int chatId = Env.lojaStr[this.lojaRetirada].chatId;
     try {
       await this.enviarActual(chatId);
-    } catch (e) {
+    } catch (error) {
       status = PedidoStatus.preenchido;
       isEnviado = false;
-      statusString = 'Falha ao enviar\n' + e.toString();
-      if (e.cause != null) {
-        switch (e.cause) {
-          case "HttpClientException: 400 Bad Request: chat not found":
-            statusString = 'Falha ao enviar\nChat $chatId não encontrado';
-            break;
-          default:
-        }
+      statusString = 'Falha ao enviar\n' + error.toString();
+      switch (error?.cause) {
+        case "HttpClientException: 400 Bad Request: chat not found":
+          statusString = 'Falha ao enviar\nChat $chatId não encontrado';
+          break;
+        default:
+          statusString = error.toString();
       }
-      print(e);
+      print(error);
     } finally {
       isEnviando = false;
       this.notifyListeners();
@@ -104,7 +109,7 @@ class Pedido extends Model {
     statusString = 'Verificando arquivos';
     this.notifyListeners();
     // limit to 50MB
-    if (this.totalSize >= (50 * pow(2, 20))) {
+    if (await (this.getSize()) >= (50 * pow(2, 20))) {
       status = PedidoStatus.preenchido;
       isEnviado = false;
       statusString = 'Falha ao enviar, tamanho do pedido excede 50MB\n'
@@ -113,22 +118,23 @@ class Pedido extends Model {
       this.notifyListeners();
       return;
     }
-    for (var grupo in grupos) {
-      for (var arquivo in grupo.arquivos) {
+    for (GrupoImpressao grupo in grupos) {
+      for (Arquivo arquivo in grupo.arquivos) {
         int duplicados = grupo.arquivos.where((arq) => arq.filename == arquivo.filename).length;
         if (duplicados > 1 || arquivo.filename == ordem + '.txt'){
           arquivo.filename = duplicados.toString() + '_' + arquivo.filename;
         }
       }
     }
-    for (var grupo in grupos) {
+    for (GrupoImpressao grupo in grupos) {
       message += '\n# Lote ${grupos.indexOf(grupo) + 1} ${tipoGrupoStr[grupo.tipoGrupo]}\n' + grupo.toMessage();
-      for (var arquivo in grupo.arquivos) {
+      for (Arquivo arquivo in grupo.arquivos) {
         message += '\nNome arquivo: ${arquivo.filename}';
-        List<int> content = await File(arquivo.path).readAsBytes();
+        List<int> content = await arquivo.readAsBytes();
         archive.addFile(
           ArchiveFile(arquivo.filename, content.length, content)
         );
+        arquivo.release();
       }
       message += '\n';
     }

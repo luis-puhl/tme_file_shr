@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:scoped_model/scoped_model.dart';
 
+import './arquivo.dart';
+
 int getId() {
   Random r = Random.secure();
   return r.nextInt(1<<32);
@@ -17,7 +19,13 @@ class GrupoImpressao extends Model {
 
   TipoGrupo get tipoGrupo => _tipoGrupo;
 
-  get size => arquivos.fold<int>(0, (acc, arq) => acc + arq.size);
+  Future<int> getSize() async {
+    int size = 0;
+    for (var arq in arquivos) {
+      size += (await arq.getSize()) ?? 0;
+    }
+    return size;
+  }
   set tipoGrupo(TipoGrupo tp) {
     if (tp != _tipoGrupo) {
       switch (tp) {
@@ -90,18 +98,6 @@ class GrupoImpressao extends Model {
       '\nArquivos: ${arquivos.length}'
       '\nConfiguração: ${config.toMessage()}'
       ;
-  }
-}
-
-class Arquivo extends Model {
-  String path, filename;
-  int size;
-
-  Arquivo(
-    this.path,
-    this.size,
-  ) {
-    filename = path.split('/').last;
   }
 }
 

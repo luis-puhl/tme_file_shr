@@ -147,7 +147,7 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
 
   @override
   void initState() {
-    print('_PrintGroupFormState.initState()');
+    super.initState();
     List<GrupoImpressao> grupos = Pedido.of(context).grupos;
     this.group = grupos.firstWhere(
       (grupo) => grupo.id == this.id,
@@ -158,7 +158,6 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
         return group;
       }
     );
-    print(this.group);
     this._tamanhoDoc = group.configDoc?.tamanhoDoc ?? TamanhoDoc.a4;
     this._duplex = group.configDoc?.duplex ?? Duplex.somenteFrente;
     this._colorido = group.configDoc?.colorido ?? Colorido.pretoBranco;
@@ -166,7 +165,6 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
     this._tipoPapelFoto = group.configFoto?.tipoPapelFoto ?? TipoPapelFoto.brilho;
     this._tipoGrupo = group.tipoGrupo ?? TipoGrupo.foto;
     this._copias = group.copias ?? 1;
-    super.initState();
   }
 
   @override
@@ -244,6 +242,9 @@ class _PrintGroupFormState extends State<PrintGroupForm> {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       formState.save();
+      if (this.group == null) {
+        this.group = Pedido.of(context).grupos.firstWhere((grupo) => grupo.id == this.id);
+      }
       this.group.setConfig(
         tamanhoDoc: _tamanhoDoc,
         duplex: _duplex,

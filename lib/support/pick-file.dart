@@ -1,8 +1,9 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
+import 'package:tme_file_shr/support/transparent-image.dart';
 import 'package:tme_file_shr/models.dart';
 
 class PickFile extends StatefulWidget {
@@ -54,15 +55,26 @@ class _PickFileState extends State<PickFile> {
 
   _addFile() async {
     try {
-      String filePath = '';
-      filePath = await FilePicker.getFilePath(type: FileType.ANY);
-      if (filePath == '') {
-        return;
+      if (isDoc) {
+        String filePath = await FilePicker.getFilePath(type: FileType.ANY);
+        if (filePath == '') {
+          return;
+        }
+        setState(() {
+          widget.grupo.arquivos.add(Arquivo.fromFilePath(filePath));
+        });
+      } else {
+        List<Asset> resultList = await MultiImagePicker.pickImages(
+          maxImages: 300,
+          enableCamera: true,
+          options: CupertinoOptions(takePhotoIcon: "chat"),
+        );
+        for (Asset asset in resultList) {
+          setState(() {
+            widget.grupo.arquivos.add(Arquivo.fromAsset(asset));
+          });
+        }
       }
-      print("File path: " + filePath);
-      setState(() {
-        widget.grupo.arquivos.add(Arquivo(filePath, File(filePath).statSync().size));
-      });
     } on PlatformException catch (e) {
       print("PlatformException while picking the file: " + e.toString());
     } catch (e) {
@@ -82,7 +94,10 @@ class _PickFileState extends State<PickFile> {
         trailing: IconButton(
           icon: Icon(Icons.delete),
           color: Colors.white,
-          onPressed: () => setState(() => widget.grupo.arquivos.removeWhere((arqivo) => arqivo.path == arq.path)),
+          onPressed: () {
+            arq.release();
+            setState(() => widget.grupo.arquivos.removeWhere((arqivo) => arqivo.id == arq.id));
+          },
         ),
       ),
       child: Container(
@@ -103,7 +118,11 @@ class _PickFileState extends State<PickFile> {
                   ],
                 ),
               )
-            : Image.file(File(arq.path)),
+            : FutureBuilder(
+              future: arq.getThumb(),
+              initialData: kTransparentImage,
+              builder: (context, snap) => Image.memory(snap.data),
+            ),
       ),
     );
   }
