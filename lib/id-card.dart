@@ -151,19 +151,6 @@ class _IdCard extends StatelessWidget {
   _buildButtonsIdCard(BuildContext context) {
     Widget doneBar = Column(
       children: <Widget>[
-        ListTile(
-          // crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.center,
-          // mainAxisSize: MainAxisSize.max,
-          // children: <Widget>[
-          leading: Padding(
-            padding: EdgeInsets.all(16),
-            child: Icon(Icons.done_all),
-          ),
-          title: Text(pedido.statusString ?? ''),
-          dense: true,
-          // ],
-        ),
         pedido.isEnviado
           ? ButtonBar(
             alignment: MainAxisAlignment.center,
@@ -174,7 +161,7 @@ class _IdCard extends StatelessWidget {
                   textColor: Theme.of(context).colorScheme.onPrimary,
                   icon: Icon(Icons.play_circle_outline),
                   onPressed: () {
-                    startApp();
+                    // startApp();
                     Navigator.pop(context);
                   },
                 )

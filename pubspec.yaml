@@ -8,6 +8,8 @@ description: A new Flutter project.
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
 version: 0.3.3
+versionCode : 033
+versionName: 0.3.3
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -27,20 +29,26 @@ dependencies:
   # url_launcher
   #  ^4.2.0  ----> Android API 27
   #  ^5.0.1  ----> Android API 28
-  url_launcher: ^4.2.0
+  # url_launcher: ^4.2.0
+  url_launcher:
   # shared_preferences
   #  ^0.4.3  ----> Android API 28
   #  ^0.5.1+1  ----> Android API 28
-  shared_preferences: ^0.4.3
+  # shared_preferences: ^0.4.3
+  shared_preferences:
   # file_picker
   #   ^1.1.1 ----> API 27 ---> image_picker: ^0.4.10 ---> API 27
   #   ^1.2.0 ----> API 28 ---> image_picker: ^0.5.0 ---> API 28
-  file_picker: 1.1.1
+  # file_picker: 1.1.1
+  file_picker:
   # multi_image_picker
   #   ^2.4.11 ----> API 27
   #   ^3.0.12 ----> API 27
   #   ^3.0.13 ----> API 27
-  multi_image_picker: ^2.4.11
+  # multi_image_picker: ^2.4.11
+  # multi_image_picker:
+  # custom_multi_image_picker:
+  # multi_media_picker:
 
 dev_dependencies:
   flutter_test:

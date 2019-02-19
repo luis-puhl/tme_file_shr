@@ -1,11 +1,25 @@
 import 'dart:math';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 import 'package:tme_file_shr/support/transparent-image.dart';
+import 'package:tme_file_shr/main.dart';
 
 class Arquivo {
+  static List<String> serializeThumbnailConfig(String identifier, int width, int height, int quality) {
+    return <String>[identifier, width.toString(), height.toString(), quality.toString()];
+  }
+  static Future<bool> requestThumbnail(List<String> serialConfig) {
+    MultiImagePicker.pickImages(maxImages: 300);
+    String identifier = serialConfig[0];
+    int width = int.tryParse(serialConfig[1]) ?? 100;
+    int height = int.tryParse(serialConfig[2]) ?? 100;
+    int quality = int.tryParse(serialConfig[3]) ?? 100;
+    return MultiImagePicker.requestThumbnail(identifier, width, height, quality);
+  }
+
   String _path, filename;
   Asset asset;
   int _size;
@@ -33,7 +47,11 @@ class Arquivo {
   Future<Uint8List> getThumb() async {
     if (this.asset?.thumbData == null) {
       // await this.asset?.requestThumbnail(asset.originalWidth ~/100, asset.originalHeight ~/100, quality: 10);
-      await this.asset?.requestThumbnail(asset.originalWidth, asset.originalHeight);
+      await compute(
+        Arquivo.requestThumbnail,
+        Arquivo.serializeThumbnailConfig(this.asset.identifier, asset.originalWidth, asset.originalHeight, 100)
+      );
+      // await this.asset?.requestThumbnail(asset.originalWidth, asset.originalHeight);
     }
     if ( this.asset.thumbData != null) {
       return this.asset.thumbData.buffer.asUint8List();

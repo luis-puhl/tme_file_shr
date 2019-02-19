@@ -77,10 +77,7 @@ class Pedido extends Model {
     } catch (error) {
       status = PedidoStatus.preenchido;
       isEnviado = false;
-      statusString = 'Falha ao enviar\n' + error.toString();
-      if (error?.cause != null && error?.cause == 'HttpClientException: 400 Bad Request: chat not found') {
-        statusString = 'Falha ao enviar\nChat $chatId não encontrado';
-      }
+      statusString = 'Falha ao enviar\nTente novamente mais tarde.';
       print(error);
     } finally {
       isEnviando = false;

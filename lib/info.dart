@@ -36,7 +36,10 @@ class Info extends StatelessWidget {
             color: Theme.of(context).colorScheme.primary,
             textColor: Theme.of(context).colorScheme.onPrimary,
             icon: Icon(Icons.play_circle_outline, size: 50,),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              // startApp();
+              Navigator.pop(context);
+            },
           ),
         ),
       ),
