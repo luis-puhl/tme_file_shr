@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>about</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-card class="welcome-card">
+    <ion-img src="/assets/logo_cor.png"></ion-img>
+    <ion-card-header>
+      <ion-card-title>Sobre o aplicativo</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>
+        Neste aplicativo você pode fazer pedidos para alguma de nossas lojas.
+        <br>
+        Você pode enviar até 50MB de arquivos por pedido e obter o orçamento entrando em contato com a loja para onde
+        ele foi feito.
+      </p>
+      <div class="center">
+        <ion-button size="large">Iniciar um pedido</ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Sobre a Foto Celula</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>
+        A Foto Célula foi fundada no ano de 1976 na cidade de Londrina pelo Senhor Terumi Koga e sua principal
+        <br>
+        missão é oferecer soluções em recordações, presentes e registros.
+        <br>
+        Facebook: <a href="https://web.facebook.com/fotoceluladigital/">@fotoceluladigital</a>
+      </p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Lojas</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ng-template ngFor let-loja [ngForOf]="lojaStr" let-isFirst="first">
+          <ion-list-header>
+            <ion-label>
+              <ion-text>
+                <h1 [ngClass]="{'add-pad': !isFirst}">{{ loja.nome }}</h1>
+              </ion-text>
+            </ion-label>
+          </ion-list-header>
+          Endereço
+          <ion-item [href]="loja.enderecoWebURI">
+            <ion-label>{{ loja.endereco }}</ion-label>
+            <ion-icon slot="end" color="medium" name="pin"></ion-icon>
+          </ion-item>
+          Telefones
+          <ion-item *ngFor="let fone of loja.telefone" [href]="'tel:' + fone">
+            <ion-label>{{ fone }}</ion-label>
+            <ion-icon slot="end" color="medium" name="call"></ion-icon>
+          </ion-item>
+          Whatsapp
+          <ion-item [href]="loja.enderecoWhatsappURI">
+            <ion-label>{{ loja.whatsapp }}</ion-label>
+            <ion-icon slot="end" color="medium" name="text"></ion-icon>
+          </ion-item>
+          Email
+          <ion-item [href]="loja.enderecoEmailURI">
+            <ion-label>{{ loja.email }}</ion-label>
+            <ion-icon slot="end" color="medium" name="mail"></ion-icon>
+          </ion-item>
+        </ng-template>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,7 @@
+export const API_KEYS = {
+  telegramToken: '<token>',
+  LOJA_QUINTINO_ID: '<id>',
+  LOJA_COMTUR_ID: '<id>',
+  LOJA_HIGI_ID: '<id>',
+  LOJA_CENTRO_ID: '<id>',
+};
