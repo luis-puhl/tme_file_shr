@@ -16,7 +16,7 @@ export class AppComponent {
       icon: 'home'
     },
     {
-      title: 'About',
+      title: 'Sobre',
       url: '/about',
       icon: 'information-circle-outline'
     },
@@ -24,6 +24,11 @@ export class AppComponent {
       title: 'List',
       url: '/list',
       icon: 'list'
+    },
+    {
+      title: 'Novo Pedido',
+      url: '/new-order',
+      icon: 'clipboard'
     }
   ];
 
