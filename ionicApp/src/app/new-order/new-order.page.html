@@ -10,49 +10,47 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Identificação</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-icon name="person" slot="start"></ion-icon>
-        <ion-label position="floating">Seu Nome</ion-label>
-        <ion-input></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-icon name="call" slot="start"></ion-icon>
-        <ion-label position="floating">Seu Telefone</ion-label>
-        <ion-input></ion-input>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
-  <hr>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Loja de Retirada</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-icon name="business" slot="start"></ion-icon>
-        <ion-label position="floating">Loja</ion-label>
-        <ion-select>
-          <ion-select-option value="">No Game Console</ion-select-option>
-          <ion-select-option value="nes">NES</ion-select-option>
-          <ion-select-option value="n64" selected>Nintendo64</ion-select-option>
-          <ion-select-option value="ps">PlayStation</ion-select-option>
-          <ion-select-option value="genesis">Sega Genesis</ion-select-option>
-          <ion-select-option value="saturn">Sega Saturn</ion-select-option>
-          <ion-select-option value="snes">SNES</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
+  <form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()">
+    <ion-card>
+      <ion-card-content>
+        <ion-item>
+          <ion-icon name="person" slot="start"></ion-icon>
+          <ion-label position="floating">Nome</ion-label>
+          <ion-input formControlName="nome" name="nome" required autocapitalize="on" ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="call" slot="start"></ion-icon>
+          <ion-label position="floating">Telefone</ion-label>
+          <ion-input formControlName="tel" name="tel" required clearInput="true" type="tel"></ion-input>
+          <ion-note *ngIf="(pedidoForm?.get('tel').dirty || pedidoForm?.get('tel').touched) && pedidoForm?.get('tel')?.errors?.tel">
+            ex: +55 10 9 9865-2356
+          </ion-note>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+    <hr>
+    <ion-card>
+      <ion-card-content>
+        <ion-item>
+          <ion-icon name="business" slot="start"></ion-icon>
+          <ion-label position="floating">Loja</ion-label>
+          <ion-select formControlName="loja" name="loja">
+            <ion-select-option *ngFor="let loja of lojas" [value]="loja.key">{{ loja.nome }}</ion-select-option>
+          </ion-select>
+          <p *ngIf="lojaSelecionada != null">
+            {{ lojaStr[lojaSelecionada]?.endereco }}
+            {{ lojaStr[lojaSelecionada]?.whatsapp }}
+          </p>
+          <ion-item-divider></ion-item-divider>
+        </ion-item>
+        <ion-item>
           <ion-icon name="calendar" slot="start"></ion-icon>
           <ion-label position="floating">Data Retirada</ion-label>
-          <ion-datetime></ion-datetime>
+          <ion-datetime formControlName="data_retirada" name="data_retirada" [min]="minDataRetirada"></ion-datetime>
         </ion-item>
-    </ion-card-content>
-  </ion-card>
-  <hr>
-  <ion-button expand="block">Enviar</ion-button>
+      </ion-card-content>
+    </ion-card>
+    <hr>
+    <ion-button expand="block" [disabled]="pedidoForm.invalid" (click)="onSubmit($event)">Enviar</ion-button>
+  </form>
 </ion-content>
