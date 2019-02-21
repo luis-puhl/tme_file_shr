@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LojaInfo, lojaStr } from '@app/models/loja';
+import { StoreInfo, storeStr } from '@app/models/store';
 
 @Component({
   selector: 'app-about',
@@ -7,7 +7,7 @@ import { LojaInfo, lojaStr } from '@app/models/loja';
   styleUrls: ['./about.page.scss'],
 })
 export class AboutPage implements OnInit {
-  lojaStr: LojaInfo[] = Object.values(lojaStr);
+  storeStr: StoreInfo[] = Object.values(storeStr);
 
   constructor() { }
 

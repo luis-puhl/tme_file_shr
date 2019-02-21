@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { LojaInfo, lojaStr, Loja } from '@app/models/loja';
+import { StoreInfo, storeStr, Store } from '@app/models/store';
 import { WeekDay } from '@angular/common';
 
 export function duration(b?: {
@@ -52,9 +52,9 @@ function nextValidWeekDate(date: Date, days = 0): Date {
   styleUrls: ['./new-order.page.scss'],
 })
 export class NewOrderPage implements OnInit {
-  lojas: LojaInfo[] = Object.values(lojaStr);
-  lojaStr = lojaStr;
-  lojaSelecionada: Loja;
+  stores: StoreInfo[] = Object.values(storeStr);
+  storeStr = storeStr;
+  storeSelecionada: Store;
   minDataRetirada = iso8601DatetimeFormat(nextValidWeekDate(new Date(), 3));
 
   pedidoForm = this.fb.group({
@@ -75,7 +75,7 @@ export class NewOrderPage implements OnInit {
         return ret;
       }
     ])],
-    loja: [Loja.loja1, Validators.compose([Validators.required])],
+    store: [Store.store1, Validators.compose([Validators.required])],
     data_retirada: [this.minDataRetirada, Validators.compose([
       Validators.required,
     ])],

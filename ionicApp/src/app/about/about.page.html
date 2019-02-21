@@ -49,32 +49,32 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ng-template ngFor let-loja [ngForOf]="lojaStr" let-isFirst="first">
+        <ng-template ngFor let-store [ngForOf]="storeStr" let-isFirst="first">
           <ion-list-header>
             <ion-label>
               <ion-text>
-                <h1 [ngClass]="{'add-pad': !isFirst}">{{ loja.nome }}</h1>
+                <h1 [ngClass]="{'add-pad': !isFirst}">{{ store.nome }}</h1>
               </ion-text>
             </ion-label>
           </ion-list-header>
           Endereço
-          <ion-item [href]="loja.enderecoWebURI">
-            <ion-label>{{ loja.endereco }}</ion-label>
+          <ion-item [href]="store.addressWebURI">
+            <ion-label>{{ store.address }}</ion-label>
             <ion-icon slot="end" color="medium" name="pin"></ion-icon>
           </ion-item>
           Telefones
-          <ion-item *ngFor="let fone of loja.telefone" [href]="'tel:' + fone">
+          <ion-item *ngFor="let fone of store.phone" [href]="'tel:' + fone">
             <ion-label>{{ fone }}</ion-label>
             <ion-icon slot="end" color="medium" name="call"></ion-icon>
           </ion-item>
           Whatsapp
-          <ion-item [href]="loja.enderecoWhatsappURI">
-            <ion-label>{{ loja.whatsapp }}</ion-label>
+          <ion-item [href]="store.whatsappURI">
+            <ion-label>{{ store.whatsapp }}</ion-label>
             <ion-icon slot="end" color="medium" name="text"></ion-icon>
           </ion-item>
           Email
-          <ion-item [href]="loja.enderecoEmailURI">
-            <ion-label>{{ loja.email }}</ion-label>
+          <ion-item [href]="store.emailURI">
+            <ion-label>{{ store.email }}</ion-label>
             <ion-icon slot="end" color="medium" name="mail"></ion-icon>
           </ion-item>
         </ng-template>
