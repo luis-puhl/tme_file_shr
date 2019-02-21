@@ -1,0 +1,118 @@
+import { Component } from '@angular/core';
+import { IonicPage } from 'ionic-angular';
+import { FileChooser } from '@ionic-native/file-chooser';
+import { FileOpener } from '@ionic-native/file-opener';
+import { FilePath } from '@ionic-native/file-path';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
+import { File } from '@ionic-native/file/ngx';
+
+
+declare var JSZip;
+
+@IonicPage()
+@Component({
+  selector: 'page-home',
+  templateUrl: 'home.html',
+})
+export class HomePage {
+  file_test: any;
+
+  constructor(private file: File, private fileChooser: FileChooser, private fileOpener: FileOpener, private filePath: FilePath, private http: HttpClient) {
+
+  }
+
+  chooseFile() {
+    // const httpOptions = {
+    //   headers: new HttpHeaders({
+    //     'Content-Type':  'application/json',
+    //     'Access-Control-Allow-Origin': 'localhost:8100'
+    //   })
+    // };
+    // this.http.post('http://138.197.170.34:3007/post', {
+    //   'title': 'foo',
+    //   'body': 'bar',
+    //   'userId': '1'
+    // },httpOptions)
+    //   .subscribe(
+    //     res => {
+    //       console.log(res);
+    //     },
+    //     err => {
+    //       console.log(JSON.stringify(err));
+    //     }
+    //   );
+
+
+
+
+    let http = this.http;
+// https://ionicframework.com/docs/v3/native/file/
+// https://forum.ionicframework.com/t/using-filechooser-and-filepath-to-read-text-file/125645/2
+// https://stuk.github.io/jszip/documentation/api_jszip/file_data.html
+    // this.fileChooser.open().then(file => {
+    //   this.filePath.resolveNativePath(file).then(resolvedFilePath => {
+        var new_zip = new JSZip();
+        new_zip.file("Hello1.txt", "Hello World2\n");
+        var kk = new_zip.folder('opa')
+        kk.file("Hello.jpg", this.file_test);
+        // new_zip.file("Hello2.txt", "Hello World3\n");
+        new_zip.generateAsync({type : "base64",compression: "DEFLATE",
+    compressionOptions: {
+        level: 9
+    }},).then(function(content) {
+
+        console.log(content)
+// https:///stackoverflow.com/questions/31298948/load-image-with-filereader-api-and-zip-it-using-jszip
+
+            http.post('http://192.168.15.13:3000/upload', {"teste":content, "file":"maoee"})
+              .subscribe(
+                 res => {
+                  console.log(res);
+                },
+                err => {
+                  console.log(JSON.stringify(err));
+                }
+              );
+          }, (err) => {
+            alert(err);
+          });
+
+          // this.file.readAsBinaryString(path, file)
+          //  .then(content=>{
+          //    console.log("File-Content: "+ JSON.stringify(content));
+          //    // this.extractData(content)
+          //    alert(JSON.stringify(content))
+          //  })
+          //  .catch(err=>{
+          //    console.log(err);
+          //    alert(JSON.stringify(err));
+          //  });
+
+
+    //   }).catch(err => {
+    //     alert(JSON.stringify(err));
+    //   });
+    // }).catch(err => {
+    //   alert(JSON.stringify(err));
+
+
+}
+
+  teste(event){
+
+
+   // let xx = this;
+   // reader.onloadend = function(e) {
+   //          // browser completed reading file - display it
+   //    var base64result = reader.result.substr(reader.result.indexOf(',') + 1);
+
+      this.file_test = event.target.files[0];
+      console.log(event)
+        // alert(base64result)
+    };
+    // reader.readAsDataURL(event.srcElement.files[0]);
+
+
+
+
+}
