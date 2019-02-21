@@ -7,7 +7,9 @@
       Novo Pedido
     </ion-title>
     <ion-buttons slot="end">
-      <ion-icon name="information-circle-outline" [routerDirection]="'root'" [routerLink]="'/about'"></ion-icon>
+      <ion-button routerDirection="forward" routerLink="/about">
+        <ion-icon name="information-circle-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -37,12 +39,12 @@
         <ion-item>
           <ion-icon name="business" slot="start"></ion-icon>
           <ion-label position="floating">Loja</ion-label>
-          <ion-select formControlName="loja" name="loja">
-            <ion-select-option *ngFor="let loja of lojas" [value]="loja.key">{{ loja.nome }}</ion-select-option>
+          <ion-select formControlName="store" name="store">
+            <ion-select-option *ngFor="let store of stores" [value]="store.key">{{ store.name }}</ion-select-option>
           </ion-select>
-          <p *ngIf="lojaSelecionada != null">
-            {{ lojaStr[lojaSelecionada]?.endereco }}
-            {{ lojaStr[lojaSelecionada]?.whatsapp }}
+          <p *ngIf="pedidoForm?.get('store').value != null">
+            {{ storeStr[pedidoForm?.get('store').value]?.address }}
+            {{ storeStr[pedidoForm?.get('store').value]?.whatsapp }}
           </p>
           <ion-item-divider></ion-item-divider>
         </ion-item>

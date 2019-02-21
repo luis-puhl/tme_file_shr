@@ -2,6 +2,7 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>
       Sobre
@@ -23,7 +24,9 @@
         ele foi feito.
       </p>
       <div class="center">
-        <ion-button size="large" [routerDirection]="'root'" routerLink="/new-order">Iniciar um pedido</ion-button>
+        <ion-button size="large" routerLink="/new-order" routerDirection="back">
+          Iniciar um pedido
+        </ion-button>
       </div>
     </ion-card-content>
   </ion-card>

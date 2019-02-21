@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { StoreInfo, storeStr, Store } from '@app/models/store';
+import { FormBuilder, Validators } from '@angular/forms';
 import { WeekDay } from '@angular/common';
+
+import { StoreInfo, storeStr, Store } from '@app/models/store';
 
 export function duration(b?: {
   years?: number,
@@ -54,7 +55,7 @@ function nextValidWeekDate(date: Date, days = 0): Date {
 export class NewOrderPage implements OnInit {
   stores: StoreInfo[] = Object.values(storeStr);
   storeStr = storeStr;
-  storeSelecionada: Store;
+  selectedStore: Store = Store.store1;
   minDataRetirada = iso8601DatetimeFormat(nextValidWeekDate(new Date(), 3));
 
   pedidoForm = this.fb.group({
@@ -75,13 +76,15 @@ export class NewOrderPage implements OnInit {
         return ret;
       }
     ])],
-    store: [Store.store1, Validators.compose([Validators.required])],
+    store: [this.selectedStore, Validators.compose([Validators.required])],
     data_retirada: [this.minDataRetirada, Validators.compose([
       Validators.required,
     ])],
   });
 
-  constructor(private fb: FormBuilder) { }
+  constructor(
+    private fb: FormBuilder,
+  ) { }
 
   ngOnInit() {
   }
@@ -91,5 +94,4 @@ export class NewOrderPage implements OnInit {
       console.log(this.pedidoForm.value);
     }
   }
-
 }
