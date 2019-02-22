@@ -1,6 +1,8 @@
 {
   "name": "ionicApp",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular",
   "id": "ea7117d7"
 }
