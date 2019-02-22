@@ -17,6 +17,7 @@ const routes: Routes = [
   },
   { path: 'about', loadChildren: './about/about.module#AboutPageModule' },
   { path: 'new-order', loadChildren: './new-order/new-order.module#NewOrderPageModule' },
+  { path: 'order-view', loadChildren: './order-view/order-view.module#OrderViewPageModule' },
 ];
 
 @NgModule({
